@@ -33,7 +33,7 @@ test("CLI mode always offers a prompt followed by the executable command", () =>
 });
 
 test("MCP mode keeps each agent's native connection actions", () => {
-  const presentation = getConnectionPresentation("codex", "https://creed.md/mcp");
+  const presentation = getConnectionPresentation("codex", "https://grant-md.vercel.app/mcp");
 
   assert.equal(presentation.primary?.label, "Copy prompt");
   assert.equal(presentation.secondary?.label, "Copy TOML");

@@ -2320,15 +2320,9 @@ export function inferAgentSectionAccent(input: {
 // available (SSR loading, marketing routes, demo mode). Real user state
 // always overwrites these via `loadCreedState` before the app renders.
 //
-// The example agent prompts below hard-code `https://creed.md` because
-// they illustrate what a real, hosted Creed deployment looks like - not
-// because the runtime depends on that origin. If you fork Creed and host
-// it at a different domain, the live read / MCP / write URLs the user
-// sees in their own Connect modal come from server-state at request time
-// and reflect YOUR origin correctly; only these dormant example strings
-// still mention `creed.md`. They're shown in onboarding example screens
-// and copy-prompt previews. Swap them to your domain if you want forks
-// to demo against their own host out of the box.
+// The example agent prompts below use Grant's deployed origin. The live read,
+// MCP, and write URLs in a user's Connect modal still come from server state
+// at request time and reflect the configured deployment origin.
 const EXAMPLE_READ_TOKEN = "xt_example_read_0000";
 const EXAMPLE_WRITE_TOKEN = "xt_example_write_0000";
 const EXAMPLE_DIRECT_TOKEN = "xt_example_direct_0000";
@@ -2341,11 +2335,11 @@ export const initialCreedState: CreedState = {
     avatarUrl: undefined,
     email: "",
   },
-  readUrl: `https://creed.md/u/example?token=${EXAMPLE_READ_TOKEN}`,
+  readUrl: `https://grant-md.vercel.app/u/example?token=${EXAMPLE_READ_TOKEN}`,
   readToken: EXAMPLE_READ_TOKEN,
   writeToken: EXAMPLE_WRITE_TOKEN,
   directEditToken: EXAMPLE_DIRECT_TOKEN,
-  mcpUrl: "https://creed.md/mcp",
+  mcpUrl: "https://grant-md.vercel.app/mcp",
   mcpStatus: "waiting",
   mcpLastUsed: undefined,
   mcpLastClientName: undefined,

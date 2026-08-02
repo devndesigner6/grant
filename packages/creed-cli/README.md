@@ -68,7 +68,7 @@ grant --server http://localhost:3000/mcp doctor
 Or save it:
 
 ```bash
-grant config set server https://your-grant-deployment.example/mcp
+grant config set server https://grant-md.vercel.app/mcp
 ```
 
 `GRANT_MCP_URL` can also set the server. HTTPS is required except on localhost.

@@ -80,7 +80,7 @@ npx supabase link --project-ref <project-ref>
 npx supabase db push
 ```
 
-Use `http://localhost:3000` locally. After Vercel provides the real deployment URL, set `NEXT_PUBLIC_SITE_URL` to it and update Supabase Site URL and Redirect URLs. Configure GitHub OAuth with `<NEXT_PUBLIC_SITE_URL>/auth/github/callback`, then set `GITHUB_OAUTH_CLIENT_ID` and `GITHUB_OAUTH_CLIENT_SECRET`. Grant is one Vercel Next.js deployment, using root `./`, `npm ci`, `npm run build`, and Node 20+. Its MCP endpoint is `<NEXT_PUBLIC_SITE_URL>/mcp`.
+Use `http://localhost:3000` locally. Grant's production deployment is `https://grant-md.vercel.app`: set `NEXT_PUBLIC_SITE_URL=https://grant-md.vercel.app` in Vercel, then update Supabase Site URL and Redirect URLs. Configure GitHub OAuth with `https://grant-md.vercel.app/auth/github/callback`, then set `GITHUB_OAUTH_CLIENT_ID` and `GITHUB_OAUTH_CLIENT_SECRET`. Grant is one Vercel Next.js deployment, using root `./`, `npm ci`, `npm run build`, and Node 20+. Its MCP endpoint is `https://grant-md.vercel.app/mcp`.
 
 OpenRouter is BYOK-only. Users and company owners save encrypted keys in Settings; `ANALYSIS_MODEL`, `TAB_MODEL`, and `PANEL_MODEL` select models when set. Without a key, Grant shows “Add your OpenRouter key in Settings.” Invitations always create a real acceptance URL. Add `RESEND_API_KEY` and `RESEND_FROM_EMAIL` later for branded email delivery; otherwise copy the real invite link. Verify detailed health with `X-Grant-Health-Secret`.
 

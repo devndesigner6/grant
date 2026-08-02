@@ -9,12 +9,12 @@ test("parses global options without leaking them into MCP tool arguments", () =>
       "call",
       "read_creed",
       "--server",
-      "https://creed.md/mcp",
+      "https://grant-md.vercel.app/mcp",
       "--json",
     ]),
     {
       agent: "codex",
-      server: "https://creed.md/mcp",
+      server: "https://grant-md.vercel.app/mcp",
       json: true,
       quiet: false,
       args: ["call", "read_creed"],
@@ -31,7 +31,7 @@ test("rejects missing and unsupported agent attribution values", () => {
 });
 
 test("requires HTTPS except on explicit loopback servers", () => {
-  assert.equal(validateServerUrl("https://creed.md/mcp"), "https://creed.md/mcp");
+  assert.equal(validateServerUrl("https://grant-md.vercel.app/mcp"), "https://grant-md.vercel.app/mcp");
   assert.equal(validateServerUrl("http://127.0.0.1:3000/mcp"), "http://127.0.0.1:3000/mcp");
   assert.equal(validateServerUrl("http://[::1]:3000/mcp"), "http://[::1]:3000/mcp");
   assert.throws(() => validateServerUrl("http://example.com/mcp"), /requires HTTPS/);

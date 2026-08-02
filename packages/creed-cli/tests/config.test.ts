@@ -9,9 +9,9 @@ import { loadCredential, removeCredential, saveCredential } from "../src/config/
 test("stores credentials per normalized MCP server with restrictive permissions", async () => {
   const directory = await mkdtemp(join(tmpdir(), "creed-cli-test-"));
   process.env.CREED_CONFIG_DIR = directory;
-  await saveCredential("https://creed.md/mcp/", { tokens: { access_token: "secret" } });
-  assert.deepEqual(await loadCredential("https://creed.md/mcp"), { tokens: { access_token: "secret" } });
+  await saveCredential("https://grant-md.vercel.app/mcp/", { tokens: { access_token: "secret" } });
+  assert.deepEqual(await loadCredential("https://grant-md.vercel.app/mcp"), { tokens: { access_token: "secret" } });
   if (process.platform !== "win32") assert.equal((await stat(credentialsPath())).mode & 0o777, 0o600);
-  await removeCredential("https://creed.md/mcp");
+  await removeCredential("https://grant-md.vercel.app/mcp");
   delete process.env.CREED_CONFIG_DIR;
 });
