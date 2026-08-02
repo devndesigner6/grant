@@ -175,7 +175,7 @@ export function loadSettingsUsage(range: AiUsageRange) {
   usageCache.set(key, cached);
 
   if (!cached.promise) {
-    cached.promise = readJson<{ usage?: AiUsageSummary }>(`/api/app/ai/usage?range=${range}&mode=${mode}`)
+    cached.promise = readJson<{ usage?: AiUsageSummary }>(`/api/app/ai/usage?range=${range}`)
       .then((payload) => {
         cached.value = payload.usage ?? null;
         return cached.value;

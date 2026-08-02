@@ -147,3 +147,12 @@ test("AI setup is BYOK-only and has no runtime credit or Stripe caller", () => {
     assert.doesNotMatch(source, /Add credits|checkout|billing portal|seat purchase/i);
   }
 });
+
+test("settings usage requests rely on the server-owned BYOK mode", () => {
+  const preload = readSource("../components/creed/settings-preload.ts");
+  const usageRoute = readSource("../app/api/app/ai/usage/route.ts");
+
+  assert.match(preload, /\/api\/app\/ai\/usage\?range=\$\{range\}/);
+  assert.doesNotMatch(preload, /&mode=\$\{mode\}/);
+  assert.match(usageRoute, /const mode: AiMode = "byok"/);
+});
