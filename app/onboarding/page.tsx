@@ -9,9 +9,9 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 // signed in can run it (answer questions, build with their assistant via a
 // copy-paste prompt, preview).
 // We pass one signal to the screen:
-//   - initialStage: resume point. A composed Grant profile resumes on the preview; a
-//     claimed-but-not-composed seed resumes on the prompt step; otherwise the
-//     screen starts at step 0.
+//   - initialStage: resume point. A composed Grant profile resumes on the preview;
+//     only a claimed seed with sections resumes on the prompt step. An empty
+//     profile must restart the questionnaire so it can create its seed first.
 export default async function OnboardingPage() {
   let initialStage: "prompt" | "preview" | undefined;
 
@@ -35,7 +35,7 @@ export default async function OnboardingPage() {
       );
       if (composed) {
         initialStage = "preview";
-      } else if (result.hasPersistedCreed) {
+      } else if (result.hasPersistedCreed && result.state.sections.length > 0) {
         initialStage = "prompt";
       }
     } catch (error) {
