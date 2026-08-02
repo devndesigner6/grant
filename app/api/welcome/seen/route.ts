@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { NO_STORE_HEADERS } from "@/lib/http-headers";
-import { markEntitlementWelcomed, markCompanyWelcomed } from "@/lib/stripe";
-import { resolveOwnedCompanyCreedId } from "@/lib/creed-context";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
@@ -36,20 +34,6 @@ export async function POST() {
     );
   }
 
-  try {
-    // Inside a company Creed the caller owns, the tour is the company variant,
-    // gated on the company billing row - mark that. Otherwise mark the personal
-    // entitlement. resolveOwnedCompanyCreedId is null for members and personal
-    // Creeds, so their path is unchanged.
-    const ownedCompanyId = await resolveOwnedCompanyCreedId(supabase, user);
-    if (ownedCompanyId) {
-      await markCompanyWelcomed(ownedCompanyId);
-    } else {
-      await markEntitlementWelcomed(user.id);
-    }
-  } catch {
-    // Swallow: the localStorage mirror covers this device and the next
-    // dismiss retries. Never surface an error for a cosmetic write.
-  }
+  // Welcome dismissal is client-local and independent of workspace state.
   return new NextResponse(null, { status: 204, headers: NO_STORE_HEADERS });
 }

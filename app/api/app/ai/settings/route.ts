@@ -7,11 +7,11 @@ import {
   resolveMemberCompanyCreed,
   resolveMemberCompanyCreedById,
 } from "@/lib/creed-context";
-import { setCompanyByok, setCompanyAiMode } from "@/lib/company-admin";
+import { setCompanyByok } from "@/lib/company-admin";
 
 // The model is server-selected per feature and hidden from the user, so there
 // is no model catalog in either response and no modelId in the body: this route
-// only carries the credits/byok mode and the BYOK key.
+// only carries the encrypted BYOK key.
 //
 // Company-aware: when the active Creed is a company, the settings live on the
 // company (creed_company_ai_settings). Reads are member-visible (the public
@@ -42,17 +42,11 @@ export async function PUT(request: Request) {
     const body = (await request.json()) as {
       apiKey?: string;
       clearApiKey?: boolean;
-      aiMode?: string;
     };
 
     if (body.apiKey !== undefined && (typeof body.apiKey !== "string" || body.apiKey.length > 500)) {
       return NextResponse.json({ error: "Invalid API key." }, { status: 400 });
     }
-
-    if (body.aiMode !== undefined && body.aiMode !== "credits" && body.aiMode !== "byok") {
-      return NextResponse.json({ error: "Invalid AI mode." }, { status: 400 });
-    }
-    const aiMode = body.aiMode === "byok" || body.aiMode === "credits" ? body.aiMode : undefined;
 
     // Resolve the company to write to from the SAME source the GET reads from -
     // an explicit `?creedId=` when present (validated for ownership), else the
@@ -74,15 +68,12 @@ export async function PUT(request: Request) {
       companyId = await resolveOwnedCompanyCreedId(auth.supabase, auth.user);
     }
     if (companyId) {
-      // Company: write to the company AI settings. Setting a key implies BYOK,
-      // clearing implies credits, and a lone mode change preserves the key.
+      // Company AI always uses the owner-configured OpenRouter key.
       let result;
       if (typeof body.apiKey === "string" && body.apiKey.trim()) {
-        result = await setCompanyByok({ creedId: companyId, actor: auth.user, key: body.apiKey, mode: "byok" });
+        result = await setCompanyByok({ creedId: companyId, actor: auth.user, key: body.apiKey });
       } else if (body.clearApiKey === true) {
-        result = await setCompanyByok({ creedId: companyId, actor: auth.user, key: null, mode: "credits" });
-      } else if (aiMode) {
-        result = await setCompanyAiMode({ creedId: companyId, actor: auth.user, mode: aiMode });
+        result = await setCompanyByok({ creedId: companyId, actor: auth.user, key: null });
       } else {
         result = { ok: true as const };
       }
@@ -97,7 +88,6 @@ export async function PUT(request: Request) {
       userId: auth.user.id,
       apiKey: body.apiKey,
       clearApiKey: body.clearApiKey === true,
-      aiMode,
     });
 
     void recordAuditEvent({
@@ -107,7 +97,6 @@ export async function PUT(request: Request) {
       metadata: {
         apiKeyChanged: typeof body.apiKey === "string",
         apiKeyCleared: body.clearApiKey === true,
-        aiMode: body.aiMode,
       },
     });
 

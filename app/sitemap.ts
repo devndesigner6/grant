@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 import { getSiteUrl } from "@/lib/supabase/env";
 
 // Only marketing routes go in the sitemap - anything behind the
-// entitlement gate (/file, /onboarding, /connections, /settings) would
-// redirect to /pricing for unauthenticated crawlers, so listing them is
+// authentication (/file, /onboarding, /connections, /settings) would
+// redirect to sign-in for unauthenticated crawlers, so listing them is
 // pointless and pollutes search results.
 //
 // The root `/` is deliberately absent: it 307-redirects to /home for
@@ -11,7 +11,6 @@ import { getSiteUrl } from "@/lib/supabase/env";
 // both points crawlers at a redirect and splits ranking signals.
 const PUBLIC_PATHS = [
   { path: "/home", changeFrequency: "weekly" as const, priority: 1.0 },
-  { path: "/pricing", changeFrequency: "monthly" as const, priority: 0.9 },
   { path: "/company", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/roadmap", changeFrequency: "weekly" as const, priority: 0.6 },
   { path: "/changelog", changeFrequency: "weekly" as const, priority: 0.5 },

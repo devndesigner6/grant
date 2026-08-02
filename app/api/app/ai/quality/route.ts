@@ -97,9 +97,10 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(result);
-  } catch {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not analyze Creed quality.";
     return NextResponse.json(
-      { error: "Could not analyze Creed quality." },
+      { error: message },
       { status: 400 }
     );
   }

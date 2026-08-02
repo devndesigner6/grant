@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireApiAuth } from "@/lib/api-auth";
-import {
-  resolveAiCredential,
-  deductCredits,
-  resolveCompanyAiCredential,
-  deductCompanyCredits,
-  cancelCreditReservation,
-} from "@/lib/ai/credits";
+import { resolveAiCredential, resolveCompanyAiCredential } from "@/lib/ai/credentials";
 import { callOpenRouter, streamOpenRouter, parseJsonObject } from "@/lib/ai/openrouter";
 import { getAgentModelId } from "@/lib/ai/model-catalog";
 import { recordAiUsage } from "@/lib/ai/persistence";
@@ -63,8 +57,6 @@ export async function POST(request: Request) {
     state: Awaited<ReturnType<typeof loadActiveCreedState>>["state"];
     apiKey: string;
     modelId: string;
-    mode: "credits" | "byok";
-    reservationId?: string;
     sectionIds: Set<string>;
     archivedIds: Set<string>;
     companyId?: string;
@@ -111,17 +103,13 @@ export async function POST(request: Request) {
       state,
       apiKey: credential.apiKey,
       modelId: getAgentModelId(),
-      mode: credential.mode,
-      reservationId: credential.reservationId,
       sectionIds,
       archivedIds,
       companyId,
     };
-  } catch {
-    return NextResponse.json(
-      { error: "That didn't go through. Try again" },
-      { status: 400 }
-    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "That didn't go through. Try again";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 
   const p = payloadForStream;
@@ -208,49 +196,15 @@ export async function POST(request: Request) {
           });
         }
 
-        // Bill for the spend regardless of what the plan turns out to be.
-        let creditBalanceUsd: number | null = null;
-        let chargedMicroUsd: number | null = null;
-        if (p.mode === "credits") {
-          const debit = p.companyId
-            ? await deductCompanyCredits({
-                creedId: p.companyId,
-                spentBy: auth.user.id,
-                costUsd: modelResult.costUsd,
-                feature: "panel",
-                modelId: p.modelId,
-                reservationId: p.reservationId,
-              })
-            : await deductCredits({
-                userId: auth.user.id,
-                costUsd: modelResult.costUsd,
-                feature: "panel",
-                modelId: p.modelId,
-                reservationId: p.reservationId,
-              });
-          if (debit) {
-            creditBalanceUsd = debit.balanceUsd;
-            chargedMicroUsd = debit.chargedMicroUsd;
-          }
-        }
-        if (p.mode === "byok" || creditBalanceUsd !== null) {
-          try {
-            await recordAiUsage({
-              client: auth.supabase,
-              userId: auth.user.id,
-              creedId: p.companyId,
-              feature: "panel",
-              modelId: p.modelId,
-              modelQuality: modelResult.modelQuality,
-              inputTokens: modelResult.inputTokens,
-              outputTokens: modelResult.outputTokens,
-              costUsd: modelResult.costUsd,
-              chargedMicroUsd: chargedMicroUsd ?? Math.round(modelResult.costUsd * 1_000_000),
-              aiMode: p.mode,
-            });
-          } catch {
-            // Best-effort.
-          }
+        try {
+          await recordAiUsage({
+            client: auth.supabase, userId: auth.user.id, creedId: p.companyId,
+            feature: "panel", modelId: p.modelId, modelQuality: modelResult.modelQuality,
+            inputTokens: modelResult.inputTokens, outputTokens: modelResult.outputTokens,
+            costUsd: modelResult.costUsd, chargedMicroUsd: Math.round(modelResult.costUsd * 1_000_000), aiMode: "byok",
+          });
+        } catch {
+          // Best-effort.
         }
 
         let parsed: unknown;
@@ -275,8 +229,7 @@ export async function POST(request: Request) {
         }
 
         // The user stopped between the model reply and here: don't apply or
-        // persist edits they cancelled. Billing already happened (the spend is
-        // real), but nothing touches the creed.
+        // persist edits they cancelled. Nothing touches the creed.
         if (request.signal.aborted) return;
 
         send({ type: "stage", stage: "filing" });
@@ -297,7 +250,6 @@ export async function POST(request: Request) {
         };
         send({ type: "result", result });
       } catch (error) {
-        await cancelCreditReservation(p.reservationId);
         const message =
           error instanceof Error && error.name === "AbortError"
             ? "Stopped."

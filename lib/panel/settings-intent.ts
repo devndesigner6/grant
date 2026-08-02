@@ -9,8 +9,6 @@ import type { SettingsSectionKey, UsageRangeValue } from "@/lib/panel/actions";
 export type SettingsPanelIntent = {
   scrollTo?: SettingsSectionKey;
   usageRange?: UsageRangeValue;
-  aiMode?: "credits" | "byok";
-  openDialog?: "add-credits" | "credits-history";
 };
 
 const KEY = "creed:panel-settings-intent";

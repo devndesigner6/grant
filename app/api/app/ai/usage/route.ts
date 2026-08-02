@@ -17,12 +17,10 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const range = url.searchParams.get("range") as AiUsageRange | null;
   const resolvedRange = range && ranges.has(range) ? range : "90d";
-  const modeParam = url.searchParams.get("mode");
-  const mode: AiMode = modeParam === "byok" ? "byok" : "credits";
+  const mode: AiMode = "byok";
 
   // Company members can view the pooled model-usage chart for the company Creed
-  // they belong to. Owner-only detail stays in the credit-history ledger and
-  // top-up controls. An explicit `?creedId=` pins the company (validated),
+  // they belong to. An explicit `?creedId=` pins the company (validated),
   // independent of the cookie.
   const requestedCreedId = url.searchParams.get("creedId")?.trim();
   const company = requestedCreedId

@@ -1565,7 +1565,6 @@ export async function loadCompanyCreedState(
     activityResult,
     memberProfilesResult,
     overridesResult,
-    billingResult,
     invitesResult,
     connectionsResult,
     mcpClientRows,
@@ -1598,11 +1597,6 @@ export async function loadCompanyCreedState(
       .select("section_id, permission")
       .eq("creed_id", creedId)
       .eq("user_id", user.id),
-    admin
-      .from("creed_company_billing")
-      .select("*")
-      .eq("creed_id", creedId)
-      .maybeSingle(),
     admin
       .from("creed_invites")
       .select("id, email, role")
@@ -1659,22 +1653,12 @@ export async function loadCompanyCreedState(
       section_id: string;
       permission: AgentPermission;
     }> | null) ?? [];
-  const billingRow = billingResult.data as {
-    status?: string;
-    billing_mode?: "subscription" | "lifetime";
-    billing_interval?: "month" | "year" | null;
-    current_period_end?: string | null;
-    cancel_at_period_end?: boolean;
-    seats_included?: number;
-    extra_seats?: number;
-  } | null;
   const inviteRows =
     (invitesResult.data as Array<{
       id: string;
       email: string;
       role: "admin" | "member";
     }> | null) ?? [];
-  const pendingInvites = inviteRows.length;
 
   const overrides = new Map<string, AgentPermission>(
     overrideRows.map((row) => [
@@ -1741,14 +1725,13 @@ export async function loadCompanyCreedState(
       (p) => visibleIds.has(p.sectionId) || p.sectionId === "new-section",
     );
   // The sidebar is for content: edits, proposals, section lifecycle. Admin /
-  // config events (access changes, role changes, membership, billing/BYOK) are
+  // config events (access changes, role changes, membership, BYOK) are
   // audit-log-only, so drop them here.
   const HIDDEN_ACTIVITY_KINDS = new Set([
     "permission",
     "role",
     "membership",
     "byok",
-    "billing",
   ]);
   const activityRows = (
     (activityResult.data as ActivityRow[] | null) ?? []
@@ -1769,9 +1752,6 @@ export async function loadCompanyCreedState(
     .filter((entry) => !entry.sectionId || visibleIds.has(entry.sectionId))
     .filter((entry) => !isNoopActivityEntry(entry));
 
-  const accessState = "active" as const;
-  const seatsCapacity =
-    (billingRow?.seats_included ?? 10) + (billingRow?.extra_seats ?? 0);
   const company: CompanyContext = {
     creedId,
     creedName,
@@ -1780,21 +1760,10 @@ export async function loadCompanyCreedState(
     myRole: role,
     members,
     myPermissions,
-    accessState,
     // Whether the shared "Creed" GitHub OAuth App is configured on this
     // deployment. Managers only need it to decide whether to offer "Connect".
     githubOAuthConfigured: isGitHubOAuthAppConfigured(),
-    seats:
-      role === "owner" || role === "admin"
-        ? {
-            used: memberRows.length + pendingInvites,
-            capacity: seatsCapacity,
-            included: billingRow?.seats_included ?? 10,
-            extra: billingRow?.extra_seats ?? 0,
-          }
-        : undefined,
-    // Pending invites are a management view (owner/admin): each holds a seat and
-    // can be revoked to free it.
+    // Pending invites are a management view for owners and admins.
     invites:
       role === "owner" || role === "admin"
         ? inviteRows.map((invite) => ({
@@ -1802,16 +1771,6 @@ export async function loadCompanyCreedState(
             email: invite.email,
             role: invite.role,
           }))
-        : undefined,
-    billing:
-      role === "owner" && billingRow
-        ? {
-            billingMode: billingRow.billing_mode ?? "subscription",
-            interval: billingRow.billing_interval ?? null,
-            status: billingRow.status ?? "active",
-            currentPeriodEnd: billingRow.current_period_end ?? null,
-            cancelAtPeriodEnd: Boolean(billingRow.cancel_at_period_end),
-          }
         : undefined,
   };
 

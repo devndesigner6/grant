@@ -311,7 +311,7 @@ export function UsageDemo() {
       <div className="rounded-lg border border-[var(--creed-border)] bg-[var(--creed-surface)] p-4 shadow-[0_8px_24px_rgba(28,28,26,0.04)]">
         <div>
           <div className="text-[13px] font-medium text-[var(--creed-text-secondary)]">
-            Credits spend
+            Model usage
           </div>
           <div className="mt-1 text-[26px] font-medium tracking-[-0.04em] text-[var(--creed-text-primary)]">
             $3.24

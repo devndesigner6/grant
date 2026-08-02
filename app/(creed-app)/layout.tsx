@@ -6,7 +6,6 @@ import { getAppVersion } from "@/lib/app-version";
 import { AuthedProviders } from "@/components/creed/authed-providers";
 import { hasPersistedCreed } from "@/lib/creed-backend";
 import { isSupabaseTableMissingError } from "@/lib/creed-backend-errors";
-import { getCompanyWelcomeState } from "@/lib/stripe";
 import { hasCompanyAccess } from "@/lib/creed-membership";
 import { resolveActiveCreed } from "@/lib/creed-context";
 import { getRequestAuth } from "@/lib/request-auth";
@@ -24,7 +23,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 // count - a user who deletes every section still has a Creed and must
 // not be bounced back into first-run onboarding.
 //
-// Marketing routes and /payment/* don't pass through here so they remain
+// Marketing routes and legacy compatibility routes don't pass through here so they remain
 // reachable to anyone.
 //
 // This layout (not the root) owns the dynamic, user-specific boundary now:
@@ -90,26 +89,9 @@ export default async function CreedAppLayout({ children }: { children: ReactNode
     }
   }
 
-  // One-time welcome pop-up. Fully fault-tolerant (see the helpers): any read
-  // failure resolves to "don't show", so this never affects app access. The tour
-  // is keyed to the active Creed: inside a company Creed the owner just built,
-  // read the company welcome state (its variant is amber "invite your team");
-  // otherwise no billing-linked welcome state. This matches the client-side
-  // variant AppShellLayout derives from creedType.
-  const activeEntry = active?.creeds.find((c) => c.id === active.creedId) ?? null;
-  // The company tour is the owner's post-onboarding flow. A non-owner viewing a
-  // company Creed must NOT get it. Owners get the company state.
-  let showWelcome = false;
-  let paidAt: string | null = null;
-  if (activeEntry?.type === "company") {
-    if (activeEntry.role === "owner") {
-      ({ showWelcome, paidAt } = await getCompanyWelcomeState(activeEntry.id));
-    }
-  }
-
   return (
     <AuthedProviders>
-      <AppShellLayout showWelcome={showWelcome} welcomePaidAt={paidAt}>
+      <AppShellLayout showWelcome={false} welcomePaidAt={null}>
         {children}
       </AppShellLayout>
       <AppVersionNotifier initialVersion={getAppVersion()} />

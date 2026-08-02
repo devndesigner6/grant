@@ -9,11 +9,8 @@ import type { SupabaseLikeClient } from "@/lib/supabase/types";
 
 const MICRO_PER_USD = 1_000_000;
 
-// Which key pays for first-party AI. 'credits' runs on Creed's platform key and
-// bills the user's prepaid balance; 'byok' runs on the user's own key at no
-// markup. The toggle lives in Settings; default is 'credits'. The model itself
-// is server-selected per feature and hidden from the user in both modes.
-export type AiMode = "credits" | "byok";
+// AI features use the user's own encrypted OpenRouter key.
+export type AiMode = "byok";
 
 type AiSettingsRow = {
   user_id: string;
@@ -39,7 +36,7 @@ export type AiUsageRange = "7d" | "30d" | "90d";
 
 // The spend chart is tagged by feature (Analysis today; Tab/CMD-K later), not by
 // model, since the model is hidden. Costs are the amounts actually charged
-// (marked-up in credits mode, at-cost in BYOK), summed from creed_ai_usage.
+// summed from real OpenRouter usage records.
 export type AiUsageSummary = {
   range: AiUsageRange;
   totalCostUsd: number;
@@ -52,13 +49,6 @@ export type AiUsageSummary = {
   }>;
 };
 
-export type OpenRouterBalance = {
-  usageUsd: number;
-  // null limit means an unlimited key (OpenRouter returns limit: null).
-  limitUsd: number | null;
-  remainingUsd: number | null;
-};
-
 function assertNoError(error: { message: string } | null, fallback: string) {
   if (error) {
     throw new Error(error.message || fallback);
@@ -69,7 +59,7 @@ export function buildPublicAiSettings(row?: AiSettingsRow | null): PublicAiSetti
   return {
     provider: "openrouter",
     keyStatus: row?.key_status ?? "missing",
-    aiMode: row?.ai_mode ?? "credits",
+    aiMode: "byok",
     keyLastFour: row?.api_key_last_four ?? undefined,
     lastValidatedAt: row?.last_validated_at ?? undefined,
   };
@@ -112,7 +102,7 @@ export async function readCompanyPublicAiSettings(creedId: string): Promise<Publ
   return {
     provider: "openrouter",
     keyStatus: row?.key_status === "present" ? "valid" : "missing",
-    aiMode: row?.ai_mode ?? "credits",
+    aiMode: "byok",
     keyLastFour: row?.api_key_last_four ?? undefined,
   };
 }
@@ -122,24 +112,18 @@ export async function upsertAiSettings({
   userId,
   apiKey,
   clearApiKey,
-  aiMode,
 }: {
   client: unknown;
   userId: string;
   apiKey?: string;
   clearApiKey?: boolean;
-  aiMode?: AiMode;
 }) {
   const db = client as SupabaseLikeClient;
   const existing = await readAiSettings(db, userId);
   const now = new Date().toISOString();
   const trimmedKey = apiKey?.trim();
-  const nextMode: AiMode = aiMode ?? existing?.ai_mode ?? "credits";
+  const nextMode: AiMode = "byok";
 
-  // No key-required guard here. This endpoint also handles the credits/byok
-  // toggle, which involves no key. The "you need a key" check happens at
-  // AI-call time (resolveAiCredential), and Save is disabled client-side when
-  // the field is empty.
   if (trimmedKey) {
     await validateOpenRouterKey(trimmedKey);
   }
@@ -157,8 +141,7 @@ export async function upsertAiSettings({
       : trimmedKey
         ? trimmedKey.slice(-4)
         : existing?.api_key_last_four ?? null,
-    // Preserve key_status on a mode-only save; only a new key flips it to valid
-    // and a clear flips it to missing.
+    // A new key becomes valid and a cleared key becomes missing.
     key_status: clearApiKey
       ? ("missing" as const)
       : trimmedKey
@@ -178,9 +161,9 @@ export async function upsertAiSettings({
   return buildPublicAiSettings(row);
 }
 
-// Read a BYOK user's live OpenRouter balance for the settings card. Throws on a
-// bad/expired key so the caller can surface a clean error.
-export async function fetchOpenRouterBalance(apiKey: string): Promise<OpenRouterBalance> {
+// Validate a BYOK key before storing it. The provider owns any account-level
+// usage information; Grant keeps only the encrypted key and real call records.
+async function validateOpenRouterKey(apiKey: string) {
   const response = await fetch("https://openrouter.ai/api/v1/key", {
     method: "GET",
     headers: { Authorization: `Bearer ${apiKey}` },
@@ -192,20 +175,6 @@ export async function fetchOpenRouterBalance(apiKey: string): Promise<OpenRouter
     throw new Error("OpenRouter could not read that key");
   }
 
-  const payload = (await response.json().catch(() => null)) as {
-    data?: { usage?: number; limit?: number | null };
-  } | null;
-
-  const usageUsd = Number(payload?.data?.usage) || 0;
-  const rawLimit = payload?.data?.limit;
-  const limitUsd = typeof rawLimit === "number" ? rawLimit : null;
-  const remainingUsd = limitUsd != null ? Math.max(0, limitUsd - usageUsd) : null;
-  return { usageUsd, limitUsd, remainingUsd };
-}
-
-async function validateOpenRouterKey(apiKey: string) {
-  // Reuse the balance fetch; it hits GET /api/v1/key and throws on a bad key.
-  await fetchOpenRouterBalance(apiKey);
 }
 
 export async function recordAiUsage({
@@ -234,9 +203,7 @@ export async function recordAiUsage({
   outputTokens: number;
   // The real (at-cost) OpenRouter cost of the call.
   costUsd: number;
-  // The amount actually charged, in micro-USD: marked-up in credits mode,
-  // at-cost in BYOK. The spend chart sums this so it never re-prices on a
-  // markup change.
+  // The OpenRouter cost in micro-USD. The spend chart sums this recorded value.
   chargedMicroUsd: number;
   aiMode: AiMode;
 }) {
@@ -296,8 +263,7 @@ export async function readAiUsageSummary(
 
 // The company spend chart, keyed by creed_id (company usage is stamped with the
 // company Creed id by recordAiUsage). Read via the admin client since company AI
-// usage is visible to every member. Owner-only detail lives in the credit
-// history ledger, not this aggregate chart. Mirrors the personal summary exactly
+// usage is visible to every member. Mirrors the personal summary exactly
 // so the same UsageCard renders it.
 export async function readCompanyAiUsageSummary(
   creedId: string,
@@ -331,8 +297,8 @@ function foldUsageRows(rows: UsageRow[], range: AiUsageRange): AiUsageSummary {
   const dayTotals = new Map<string, Map<string, number>>();
 
   for (const row of rows) {
-    // Prefer the charged amount (already marked-up in credits mode); fall back
-    // to the at-cost value for any legacy row missing the column.
+    // Prefer the recorded amount; fall back to at-cost for legacy rows that
+    // predate the column.
     const cost =
       row.charged_micro_usd != null
         ? (Number(row.charged_micro_usd) || 0) / MICRO_PER_USD

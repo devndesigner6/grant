@@ -39,7 +39,6 @@ const navGroups: { label: string; items: NavItem[] }[] = [
   {
     label: "Product",
     items: [
-      { label: "Pricing", href: "/pricing" },
       { label: "Company", href: "/company" },
       { label: "Roadmap", href: "/roadmap" },
     ],
@@ -65,7 +64,7 @@ const navGroups: { label: string; items: NavItem[] }[] = [
 const lightHeroImage = "/assets/landing/scenery/light-hero.png";
 const darkHeroImage = "/assets/landing/scenery/dark-hero.png";
 
-// Shared hero banner for the inner marketing pages (pricing, docs, privacy,
+// Shared hero banner for the inner marketing pages (docs, privacy,
 // terms, stack). Full-bleed art (no framed card) with the page background
 // fading over the lower edge, matching the landing hero treatment.
 export function MarketingHeroBanner({
@@ -347,7 +346,7 @@ export function MarketingHeader({
 }
 
 // `useLandingAuthState` now lives in components/marketing/use-landing-auth-state.ts
-// so both the chrome and the pricing card share the same auth listener
+// so the site chrome has one shared auth listener
 // rather than each spinning up their own.
 
 // Circular (solid) GitHub mark for the star pill - the filled logo rather than

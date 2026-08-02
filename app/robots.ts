@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getSiteUrl } from "@/lib/supabase/env";
 
 // Indexable surface = marketing pages only. Everything behind auth or
-// payment plus the API routes are disallowed so crawlers don't waste
+// Internal API routes are disallowed so crawlers don't waste
 // budget on redirect chains and we never accidentally index a leaked
 // success URL.
 const DISALLOW = [
@@ -16,7 +16,6 @@ const DISALLOW = [
   "/onboarding",
   "/connections",
   "/settings",
-  "/payment/",
 ];
 
 // AI search and answer engines each ship several named crawlers. We list them

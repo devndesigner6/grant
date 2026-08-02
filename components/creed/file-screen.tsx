@@ -1455,16 +1455,12 @@ export function FileScreen() {
         const payload = (await response.json()) as {
           settings?: {
             keyStatus?: "missing" | "valid" | "invalid";
-            aiMode?: "credits" | "byok";
+            aiMode?: "byok";
           };
         };
         if (!cancelled) {
-          const mode = payload.settings?.aiMode ?? "credits";
           const keyOk = payload.settings?.keyStatus === "valid";
-          // BYOK needs a valid key; credits mode is always enabled (the actual
-          // credit balance check happens at analysis time on the server).
-          const enabled = mode === "byok" ? keyOk : true;
-          setQualityEnabled(enabled);
+          setQualityEnabled(keyOk);
         }
       } catch {
         if (!cancelled) {

@@ -46,10 +46,10 @@ export default function NotFound() {
             Back home
           </Link>
           <Link
-            href="/pricing"
+            href="/"
             className="inline-flex h-10 items-center justify-center rounded-md border border-[var(--creed-border)] bg-transparent px-5 text-[14px] font-medium text-[var(--creed-text-primary)] transition-colors hover:bg-[var(--creed-surface-raised)]"
           >
-            See pricing
+            Go home
           </Link>
         </div>
       </div>

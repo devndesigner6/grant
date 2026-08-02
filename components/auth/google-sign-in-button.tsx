@@ -19,10 +19,9 @@ export function GoogleSignInButton({
   className?: string;
   showIcon?: boolean;
   // Optional post-auth destination. Forwarded through `/auth/callback`
-  // via its `next` query param. The pricing card and landing "Get Started"
-  // pass `/onboarding` so the user lands in the free onboarding funnel;
-  // `/payment/success` passes `/file` so the post-purchase sign-in lands
-  // the user inside the app. When omitted, the callback's existing default
+  // via its `next` query param. Landing "Get Started" passes `/onboarding`
+  // so the user lands in the onboarding funnel. When omitted, the callback's
+  // existing default
   // (root redirect) applies.
   redirectTo?: string;
 }) {

@@ -23,7 +23,6 @@ export type AuditAction =
   | "company.member_removed"
   | "company.role_changed"
   | "company.permission_changed"
-  | "company.seats_changed"
   | "company.byok_updated"
   | "company.ai_mode_updated"
   | "company.ownership_transferred"

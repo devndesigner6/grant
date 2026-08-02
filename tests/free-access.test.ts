@@ -107,9 +107,32 @@ test("company UI no longer derives read-only state from billing", () => {
   const fileScreen = readSource("../components/creed/file-screen.tsx");
   const companySettings = readSource("../components/creed/company-settings.tsx");
 
-  assert.match(backend, /const accessState = "active" as const;/);
+  assert.doesNotMatch(backend, /creed_company_billing/);
   assert.doesNotMatch(fileScreen, /accessState !== "frozen"/);
   assert.doesNotMatch(fileScreen, /accessState === "frozen"/);
   assert.doesNotMatch(companySettings, /Fix billing/);
   assert.doesNotMatch(companySettings, /payment did not go through/);
+});
+
+test("onboarding and retired public routes do not send users to checkout", () => {
+  const onboarding = readSource("../components/creed/onboarding-screen.tsx");
+  const pricing = readSource("../app/pricing/page.tsx");
+  const success = readSource("../app/payment/success/page.tsx");
+  const cancelled = readSource("../app/payment/cancelled/page.tsx");
+
+  assert.doesNotMatch(onboarding, /checkout|entitlement|subscription/i);
+  for (const source of [pricing, success, cancelled]) {
+    assert.match(source, /redirect\("\/"\)/);
+  }
+});
+
+test("AI setup is BYOK-only and has no runtime credit or Stripe caller", () => {
+  const credentials = readSource("../lib/ai/credentials.ts");
+  const settings = readSource("../components/creed/settings-screen.tsx");
+  const companySettings = readSource("../components/creed/company-settings.tsx");
+
+  assert.match(credentials, /Add your OpenRouter key in Settings\./);
+  for (const source of [settings, companySettings]) {
+    assert.doesNotMatch(source, /Add credits|checkout|billing portal|seat purchase/i);
+  }
 });

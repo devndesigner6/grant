@@ -141,7 +141,7 @@ export async function streamOpenRouter({
   if (!response.ok || !response.body) {
     clearTimeout(timeout);
     if (response.status === 401) throw new Error("OpenRouter rejected your key");
-    if (response.status === 402) throw new Error("OpenRouter is out of credit");
+    if (response.status === 402) throw new Error("The OpenRouter account has insufficient provider funds.");
     if (response.status === 429) throw new Error("OpenRouter is rate-limiting you");
     throw new Error("OpenRouter rejected this request.");
   }
@@ -297,7 +297,7 @@ export async function callOpenRouter({
         throw new Error("OpenRouter rejected your key");
       }
       if (response.status === 402) {
-        throw new Error("OpenRouter is out of credit");
+        throw new Error("The OpenRouter account has insufficient provider funds.");
       }
       if (response.status === 429) {
         throw new Error("OpenRouter is rate-limiting you");
@@ -318,7 +318,7 @@ export async function callOpenRouter({
     const outputTokens = payload.usage?.completion_tokens ?? 0;
     const model = await getAiModel(modelId);
 
-    // Prefer OpenRouter's authoritative billed cost; fall back to pricing the
+    // Prefer OpenRouter's authoritative billed cost; fall back to calculating
     // real returned token counts off our catalog if it isn't present.
     const reportedCost = payload.usage?.cost;
     const costUsd =

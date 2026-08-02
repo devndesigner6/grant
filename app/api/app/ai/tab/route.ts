@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireApiAuth } from "@/lib/api-auth";
-import {
-  resolveAiCredential,
-  deductCredits,
-  resolveCompanyAiCredential,
-  deductCompanyCredits,
-  cancelCreditReservation,
-} from "@/lib/ai/credits";
+import { resolveAiCredential, resolveCompanyAiCredential } from "@/lib/ai/credentials";
 import { streamOpenRouter } from "@/lib/ai/openrouter";
 import { recordAiUsage } from "@/lib/ai/persistence";
 import {
@@ -25,7 +19,7 @@ import { log } from "@/lib/observability";
 
 // Tab autocomplete: one explicit press, one streamed suggestion. The route
 // streams raw completion text (text/plain) so the ghost renders from the first
-// token; billing happens after the stream resolves, tagged feature "tab".
+// token; usage is recorded after the stream resolves, tagged feature "tab".
 // Approve / reject / keep typing never reach this route, so only the press
 // itself is metered.
 
@@ -62,9 +56,7 @@ export async function POST(request: Request) {
     messages: Array<{ role: "system" | "user"; content: string }>;
     apiKey: string;
     modelId: string;
-    mode: "credits" | "byok";
     maxTokens: number;
-    reservationId?: string;
   };
   try {
     const body = (await request.json()) as {
@@ -125,8 +117,6 @@ export async function POST(request: Request) {
       ],
       apiKey: credential.apiKey,
       modelId: credential.modelId,
-      mode: credential.mode,
-      reservationId: credential.reservationId,
       // Headroom over the visible completion: reasoning models spend some of
       // this budget on (excluded) reasoning before the content arrives.
       maxTokens: mode === "draft" ? 400 : 320,
@@ -134,8 +124,7 @@ export async function POST(request: Request) {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "That didn't go through. Try again";
-    const status = message === "Out of credits" ? 402 : 400;
-    return NextResponse.json({ error: message }, { status });
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 
   const p = payload;
@@ -169,60 +158,23 @@ export async function POST(request: Request) {
             try {
               controller.enqueue(encoder.encode(chunk));
             } catch {
-              // Client already dismissed the ghost; keep reading so billing
-              // still sees the true usage.
+              // Client already dismissed the ghost; keep reading so usage
+              // still records the completed request.
             }
           },
         });
 
-        // Bill the real spend once the suggestion exists. Dismissed ghosts
-        // were still generated, so they still cost.
-        let creditBalanceUsd: number | null = null;
-        let chargedMicroUsd: number | null = null;
-        if (p.mode === "credits") {
-          const debit = companyId
-            ? await deductCompanyCredits({
-                creedId: companyId,
-                spentBy: auth.user.id,
-                costUsd: result.costUsd,
-                feature: "tab",
-                modelId: p.modelId,
-                reservationId: p.reservationId,
-              })
-            : await deductCredits({
-                userId: auth.user.id,
-                costUsd: result.costUsd,
-                feature: "tab",
-                modelId: p.modelId,
-                reservationId: p.reservationId,
-              });
-          if (debit) {
-            creditBalanceUsd = debit.balanceUsd;
-            chargedMicroUsd = debit.chargedMicroUsd;
-          }
-        }
-        if (p.mode === "byok" || creditBalanceUsd !== null) {
-          try {
-            await recordAiUsage({
-              client: auth.supabase,
-              userId: auth.user.id,
-              creedId: companyId,
-              feature: "tab",
-              modelId: p.modelId,
-              modelQuality: result.modelQuality,
-              inputTokens: result.inputTokens,
-              outputTokens: result.outputTokens,
-              costUsd: result.costUsd,
-              chargedMicroUsd:
-                chargedMicroUsd ?? Math.round(result.costUsd * 1_000_000),
-              aiMode: p.mode,
-            });
-          } catch {
-            // Best-effort.
-          }
+        try {
+          await recordAiUsage({
+            client: auth.supabase, userId: auth.user.id, creedId: companyId,
+            feature: "tab", modelId: p.modelId, modelQuality: result.modelQuality,
+            inputTokens: result.inputTokens, outputTokens: result.outputTokens,
+            costUsd: result.costUsd, chargedMicroUsd: Math.round(result.costUsd * 1_000_000), aiMode: "byok",
+          });
+        } catch {
+          // Best-effort.
         }
       } catch (error) {
-        await cancelCreditReservation(p.reservationId);
         // An empty or failed stream simply yields no ghost: the client treats
         // an empty body as "no suggestion" and returns to idle silently. A
         // user-initiated abort is expected, not an error.

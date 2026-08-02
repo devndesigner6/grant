@@ -15,11 +15,10 @@ const action = (kind: string, target = "", value = "") => ({ kind, target, value
 
 test("a well-formed navigation plan passes through typed", () => {
   const actions = validatePanelActions(
-    [action("usage-mode", "", "byok"), action("usage-range", "", "30d")],
+    [action("usage-range", "", "30d")],
     KNOWN
   );
   assert.deepEqual(actions, [
-    { kind: "usage-mode", value: "byok" },
     { kind: "usage-range", value: "30d" },
   ]);
 });
@@ -45,7 +44,6 @@ test("targets must exist across the right namespace", () => {
 
 test("enum-valued actions reject junk values", () => {
   assert.equal(validatePanelActions([action("usage-range", "", "yearly")], KNOWN), null);
-  assert.equal(validatePanelActions([action("open-dialog", "settings")], KNOWN), null);
   assert.equal(validatePanelActions([action("navigate", "/dashboard")], KNOWN), null);
 });
 

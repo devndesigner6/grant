@@ -19,7 +19,6 @@ import {
   summarizeDiff,
 } from "@/components/creed/inline-proposal-diff";
 import { RichTextEditor } from "@/components/creed/rich-text-editor";
-import { useStripeCheckout } from "@/components/marketing/use-stripe-checkout";
 import {
   accentColorMap,
   type AgentIconKind,
@@ -67,15 +66,12 @@ const stepAccentMap = [
 ];
 
 export function OnboardingScreen({
-  paid,
   initialStage,
 }: {
-  paid: boolean;
   initialStage?: "prompt" | "preview";
 }) {
   const router = useRouter();
   const { state, updateOnboarding, claimOnboardingPreview } = useCreed();
-  const { startCheckout, submitting: checkoutSubmitting } = useStripeCheckout();
   const [step, setStep] = useState(
     initialStage === "preview" ? PREVIEW_STEP : initialStage === "prompt" ? PROMPT_STEP : 0
   );
@@ -112,10 +108,10 @@ export function OnboardingScreen({
   // /file <-> /onboarding. They instead start on the preview (via initialStage)
   // with the "Get Creed" button. We only bounce at step 0, never mid-flow.
   useEffect(() => {
-    if (paid && step === 0 && composed) {
+    if (step === 0 && composed) {
       router.replace("/file");
     }
-  }, [router, paid, step, composed]);
+  }, [router, step, composed]);
 
   const handleContinue = useCallback(async () => {
     if (step === EXPLAINER_C_STEP) {
@@ -537,7 +533,7 @@ export function OnboardingScreen({
                 )}
               </Button>
             </div>
-          ) : paid ? (
+          ) : (
             <Button
               style={{ borderRadius: "0.875rem" }}
               className="bg-[var(--creed-text-primary)] px-5 text-[var(--creed-button-primary-fg)] hover:bg-[var(--creed-button-primary-hover)]"
@@ -545,22 +541,6 @@ export function OnboardingScreen({
             >
               Go to my Creed
               <ArrowRightIcon className="h-4 w-4" size={16} />
-            </Button>
-          ) : (
-            // Subscription-first: a single low-friction monthly checkout. Yearly
-            // and lifetime are chosen later on /pricing or in the billing dialog.
-            <Button
-              style={{ borderRadius: "0.875rem" }}
-              className="bg-[var(--creed-text-primary)] px-5 text-[var(--creed-button-primary-fg)] hover:bg-[var(--creed-button-primary-hover)] disabled:bg-[var(--creed-border-strong)] disabled:text-[var(--creed-text-tertiary)]"
-              onClick={() => void startCheckout({ plan: "personal", cadence: "monthly" })}
-              disabled={checkoutSubmitting}
-            >
-              {checkoutSubmitting ? "Starting" : "Start for $12/mo"}
-              {checkoutSubmitting ? (
-                <LoaderCircle className="h-4 w-4 animate-spin" />
-              ) : (
-                <ArrowRightIcon className="h-4 w-4" size={16} />
-              )}
             </Button>
           )}
         </div>

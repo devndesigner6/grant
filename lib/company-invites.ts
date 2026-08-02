@@ -4,22 +4,20 @@ import type { User } from "@supabase/supabase-js";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { SupabaseLikeClient } from "@/lib/supabase/types";
 import { hashSecret } from "@/lib/secret-crypto";
-import { getCompanyBilling } from "@/lib/company-billing";
 import { getCreedRole } from "@/lib/creed-membership";
 import { getUserName, getAvatarUrl, getAvatarInitials } from "@/lib/creed-backend";
 
 export type InviterProfile = { name: string; avatarUrl?: string; initials: string };
 
-// Company invites: create / accept / resend / revoke, plus seat accounting.
+// Company invites: create / accept / resend / revoke.
 //
-// A seat is an active member OR a pending invite. Invites expire after 7 days,
+// Invites expire after 7 days,
 // carry a hashed token (the raw token only ever lives in the emailed link), and
 // are unique-per-email-per-Creed while pending. All writes go through the admin
 // client after an app-level owner/admin role check in the calling route.
 
 const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-export type SeatUsage = { used: number; capacity: number; available: number };
 
 export type InviteResult =
   | { ok: true; inviteId: string; token: string }
@@ -31,7 +29,7 @@ export type InviteResult =
 
 export type AcceptResult =
   | { ok: true; creedId: string }
-  | { ok: false; error: string; code: "invalid" | "expired" | "no_seats" | "email_mismatch" | "failed" };
+  | { ok: false; error: string; code: "invalid" | "expired" | "email_mismatch" | "failed" };
 
 function admin(): SupabaseLikeClient {
   return getSupabaseAdminClient() as unknown as SupabaseLikeClient;
@@ -39,9 +37,8 @@ function admin(): SupabaseLikeClient {
 
 /**
  * Flip pending invites past their expiry to `expired` so they stop holding a
- * seat. Lazy sweep (single indexed UPDATE, idempotent): called before any seat
- * count so capacity math never counts a dead invite. Cheaper than a cron for
- * the volume here.
+ * record. Lazy sweep (single indexed UPDATE, idempotent) keeps pending invite
+ * state accurate without a separate cron.
  */
 export async function sweepExpiredInvites(creedId: string): Promise<void> {
   const db = admin();
@@ -56,9 +53,8 @@ export async function sweepExpiredInvites(creedId: string): Promise<void> {
 /**
  * True if the email already belongs to a member of this Creed. Fails CLOSED:
  * if any auth lookup errors we can't rule out a match, so we throw rather than
- * return false - the caller reports a retryable error instead of letting an
- * invite to an existing member through (which would consume a seat that can
- * never be used up).
+ * return false - the caller reports a retryable error instead of creating a
+ * duplicate invite for an existing member.
  */
 async function emailBelongsToMember(creedId: string, normalizedEmail: string): Promise<boolean> {
   const db = admin();
@@ -71,23 +67,6 @@ async function emailBelongsToMember(creedId: string, normalizedEmail: string): P
   return ((data as Array<{ email?: string }> | null) ?? []).some(
     (row) => (row.email ?? "").trim().toLowerCase() === normalizedEmail
   );
-}
-
-/** Seat usage for a company Creed: active members + pending invites vs capacity. */
-export async function getSeatUsage(creedId: string): Promise<SeatUsage> {
-  const db = admin();
-  await sweepExpiredInvites(creedId);
-  const [{ count: memberCount }, { count: inviteCount }, billing] = await Promise.all([
-    db.from("creed_members").select("user_id", { count: "exact", head: true }).eq("creed_id", creedId) as unknown as Promise<{ count: number | null }>,
-    db.from("creed_invites").select("id", { count: "exact", head: true }).eq("creed_id", creedId).eq("status", "pending") as unknown as Promise<{ count: number | null }>,
-    getCompanyBilling(creedId),
-  ]);
-  // Fail closed: no billing row means no purchased capacity, so no invites can
-  // be sent. (By the time invites are reachable the checkout webhook has
-  // created the row; a missing row is an anomaly, not a free 10 seats.)
-  const capacity = billing ? billing.seats_included + billing.extra_seats : 0;
-  const used = (memberCount ?? 0) + (inviteCount ?? 0);
-  return { used, capacity, available: Math.max(0, capacity - used) };
 }
 
 /**
@@ -110,10 +89,8 @@ export async function createInvite(params: {
   }
   const normalizedEmail = email.trim().toLowerCase();
 
-  // Inviting someone already on the team would consume a seat forever (accept
-  // is idempotent for existing members, so the invite can never be "used up").
-  // Reject cleanly before touching a seat. If the membership check can't
-  // complete, fail closed with a retryable error rather than risk the invite.
+  // Reject an invite for someone already on the team. If the membership check
+  // cannot complete, fail closed with a retryable error.
   let alreadyMember: boolean;
   try {
     alreadyMember = await emailBelongsToMember(creedId, normalizedEmail);
@@ -153,7 +130,7 @@ export async function createInvite(params: {
   return { ok: true, inviteId: data.id, token };
 }
 
-/** Revoke a pending invite (owner/admin), freeing its seat. */
+/** Revoke a pending invite (owner/admin). */
 export async function revokeInvite(params: {
   creedId: string;
   actorUserId: string;
@@ -307,8 +284,7 @@ export async function acceptInvite(token: string, user: User): Promise<AcceptRes
 
 /**
  * Decline an invite for the signed-in user. Validates the invite is pending and
- * addressed to the user's email, then marks it `declined` (freeing the seat -
- * only `pending` invites count toward capacity). A distinct status from an
+ * addressed to the user's email, then marks it `declined`. A distinct status from an
  * owner-side `revoked` so the audit trail can tell a user-decline from an
  * admin-revoke. Idempotent: a non-pending invite for the right email returns ok.
  */

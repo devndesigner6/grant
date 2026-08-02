@@ -23,16 +23,12 @@ export type SettingsSectionKey =
 
 export type UsageRangeValue = "7d" | "30d" | "90d";
 
-export type PanelDialogKey = "add-credits" | "credits-history" | "billing";
-
 export type PanelExportTarget = "creed" | "activity" | "all";
 
 export type PanelAction =
   | { kind: "navigate"; target: "/file" | "/connections" | "/settings" }
   | { kind: "settings-section"; target: SettingsSectionKey }
   | { kind: "usage-range"; value: UsageRangeValue }
-  | { kind: "usage-mode"; value: "credits" | "byok" }
-  | { kind: "open-dialog"; target: PanelDialogKey }
   | { kind: "file-section"; target: string }
   | { kind: "file-proposal"; target: string }
   | { kind: "compose-section" }
@@ -85,11 +81,9 @@ export const SETTINGS_SECTION_KEYS: readonly SettingsSectionKey[] = [
 ];
 
 const USAGE_RANGE_VALUES = new Set<string>(["7d", "30d", "90d"]);
-const USAGE_MODE_VALUES = new Set<string>(["credits", "byok"]);
 const ACTIVITY_VALUES = new Set<string>(["open", "close"]);
 const EXPORT_TARGETS = new Set<string>(["creed", "activity", "all"]);
 const NAVIGATE_TARGETS = new Set<string>(["/file", "/connections", "/settings"]);
-const DIALOG_KEYS = new Set<string>(["add-credits", "credits-history", "billing"]);
 const SETTINGS_KEYS = new Set<string>(SETTINGS_SECTION_KEYS);
 
 // The model replies with a flat shape (kind/target/value all present, empty
@@ -124,14 +118,6 @@ export function validatePanelActions(
       case "usage-range":
         if (!USAGE_RANGE_VALUES.has(value)) return null;
         actions.push({ kind, value: value as UsageRangeValue });
-        break;
-      case "usage-mode":
-        if (!USAGE_MODE_VALUES.has(value)) return null;
-        actions.push({ kind, value: value as "credits" | "byok" });
-        break;
-      case "open-dialog":
-        if (!DIALOG_KEYS.has(target)) return null;
-        actions.push({ kind, target: target as PanelDialogKey });
         break;
       case "file-section":
         if (!known.sectionIds.has(target)) return null;
@@ -180,8 +166,8 @@ const CREED_KNOWLEDGE = [
   "- Editing: you edit sections directly; connected agents propose changes or, on direct sections, edit immediately. Proposals are reviewed on the File page and accepted or rejected. In Personal, Activity is for agent changes; Company uses it as a collaboration audit trail.",
   "- Connections: external AI agents connect over MCP and appear on the Connections page.",
   "- AI features: Analysis scores how complete, concrete and current your creed is (per section + overall). Panel is this command bar with three modes - Search (jump anywhere), Ask (this: questions about your creed and the app), and Agent (Command: makes reversible edits to your creed as proposals from 'Creed'). Tab (planned) is inline autocomplete.",
-  "- Settings covers: Profile, Agent edit behaviour (per-section permissions), Integrations (Google, X, GitHub), Model usage (AI spend chart, credits, add credits, usage history, BYOK key), Version control (GitHub sync of creed.md), Archived (restore sections), Data (export), Danger zone (delete account).",
-  "- Billing: AI runs on usage credits (a monthly allowance plus purchased top-ups) or BYOK (your own OpenRouter key). The spend chart breaks usage down by feature over 7/30/90 days.",
+  "- Settings covers: Profile, Agent edit behaviour (per-section permissions), Integrations (Google, X, GitHub), Model usage (AI spend chart, usage history, OpenRouter key), Version control (GitHub sync of creed.md), Archived (restore sections), Data (export), Danger zone (delete account).",
+  "- AI features use the OpenRouter key you save in Settings. The spend chart breaks usage down by feature over 7/30/90 days.",
   "- Shortcuts: K opens Panel, F find & replace, A activity log, S collapse sidebar, M theme.",
 ].join("\n");
 
@@ -198,7 +184,7 @@ export function buildPanelSystemPrompt(mode: PanelMode) {
   return [
     "You are Ask, the assistant inside Creed (a personal context profile app). You are an expert on Creed and on this user's profile content.",
     "Answer in one to three friendly, direct sentences using the Creed product knowledge and the user's profile content you are given. Preserve the user's own wording when quoting their creed.",
-    "Only include navigation action(s) when GOING somewhere is the actual point of the request - e.g. 'take me to my spend', 'open my goals', 'where do I add credits'. For a plain informational question ('what is the Analysis feature?', 'what are my goals?'), just answer; do NOT attach a navigation action, because there is nowhere the user asked to go. When you do include actions, never claim you navigated - the app shows a 'take me there' button and the user decides.",
+    "Only include navigation action(s) when going somewhere is the actual point of the request, for example 'take me to my usage' or 'open my goals'. For a plain informational question, just answer. Do not claim you navigated because the user decides whether to follow the action.",
     "You answer and navigate; you never change the user's creed (that is Agent, on Command). If they ask to edit, rename, recolor, delete, or archive, tell them Agent does that.",
     "Return valid JSON only: answer plus any actions.",
   ].join(" ");
@@ -231,9 +217,8 @@ function renderSharedContext({
   return [
     "App map (the only places and controls that exist):",
     '- Pages (kind "navigate", target): /file (the Creed editor: sections + pending proposals), /connections (connected agents), /settings.',
-    '- Settings sections (kind "settings-section", target): profile, agent-edits, integrations, model-usage (spend chart, credits, add credits, usage history, BYOK key), version-control, archived, data, danger.',
-    '- Controls (each implies navigating to model-usage): kind "usage-range" (value 7d|30d|90d; "this week"=7d, "this month"=30d, longer=90d); kind "usage-mode" (value credits|byok; BYOK spend needs byok).',
-    '- Dialogs (kind "open-dialog", target): add-credits, credits-history, billing.',
+    '- Settings sections (kind "settings-section", target): profile, agent-edits, integrations, model-usage (usage history and OpenRouter key), version-control, archived, data, danger.',
+    '- Controls (each implies navigating to model-usage): kind "usage-range" (value 7d|30d|90d; "this week"=7d, "this month"=30d, longer=90d).',
     '- File targets: kind "file-section" (target = a section id below), kind "file-proposal" (target = a proposal id below), kind "compose-section" (start a new section).',
     '- kind "open-push": open the GitHub push review panel on /file.',
     '- kind "activity-panel" (value open|close): the activity log sidebar on /file.',
@@ -288,13 +273,13 @@ export function buildPanelUserPrompt({
           "",
           "Examples:",
           '- "ai spend" -> ok, actions: [{kind: settings-section, target: model-usage}]',
-          '- "byok this month" -> ok, actions: [{kind: usage-mode, value: byok}, {kind: usage-range, value: 30d}]',
-          '- "the proposal about pricing" -> ok, actions: [{kind: file-proposal, target: matching id}]',
+          '- "my usage this month" -> ok, actions: [{kind: usage-range, value: 30d}]',
+          '- "the proposal about a launch" -> ok, actions: [{kind: file-proposal, target: matching id}]',
         ].join("\n")
       : [
           "",
           "Examples:",
-          '- "how much have I spent this month?" -> answer says you are opening it, actions: [{kind: usage-mode, value: credits}, {kind: usage-range, value: 30d}] (going there IS the point)',
+          '- "how much have I used this month?" -> answer says you are opening it, actions: [{kind: usage-range, value: 30d}] (going there is the point)',
           '- "what is the Analysis feature?" -> answer explains Analysis; NO actions (nowhere the user asked to go)',
           '- "copy my creed" -> answer confirms, actions: [{kind: copy-creed}]',
           '- "add a section for my hobbies" / "I want a new section" -> answer confirms you are opening a new section, actions: [{kind: compose-section}]',
@@ -369,8 +354,6 @@ export function buildPanelResponseFormat() {
                     "navigate",
                     "settings-section",
                     "usage-range",
-                    "usage-mode",
-                    "open-dialog",
                     "file-section",
                     "file-proposal",
                     "compose-section",

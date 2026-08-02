@@ -1,11 +1,10 @@
 import "server-only";
 import type { SupabaseLikeClient } from "@/lib/supabase/types";
 import type { CreedRole, CreedType } from "@/lib/creed-permissions";
-import { deriveCompanyAccessState, type CompanyAccessState } from "@/lib/creed-permissions";
 
 // Membership + Creed-listing helpers.
 //
-// These read the creeds / creed_members / creed_company_billing tables added in
+// These read the creeds and creed_members tables added in
 // the Company Batch A migration. They are the source of truth for "which Creeds
 // does this user belong to", "what is their role", and "does a company Creed
 // grant app access". Everything is keyed by creed_id; personal Creeds are just
@@ -139,28 +138,8 @@ export async function getPersonalCreedId(
 }
 
 /**
- * The access state of a company Creed from its billing row, or null when the
- * Creed has no billing row (personal Creeds, or a company shell before
- * checkout completes). Read via the admin client (billing is owner-only RLS).
- */
-export async function getCompanyAccessState(
-  client: unknown,
-  creedId: string
-): Promise<CompanyAccessState | null> {
-  const db = client as SupabaseLikeClient;
-  const { data, error } = (await db
-    .from("creed_company_billing")
-    .select("status")
-    .eq("creed_id", creedId)
-    .maybeSingle()) as { data: { status: string } | null; error: unknown };
-  if (error || !data) return null;
-  return deriveCompanyAccessState(data.status);
-}
-
-/**
  * Does the user hold membership on at least one company Creed? The second
- * parameter remains for call-site compatibility while company billing is no
- * longer an access control.
+ * second parameter remains for call-site compatibility.
  */
 export async function hasCompanyAccess(
   client: unknown,

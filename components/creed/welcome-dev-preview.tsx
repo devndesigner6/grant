@@ -1,9 +1,8 @@
 "use client";
 
 // Dev-only mount for preview shortcuts. Lives at the root layout so they work
-// on any page in development - including /pricing and /home, where the real
-// (creed-app) instances aren't mounted because the entitlement gate hasn't
-// let you in. Renders nothing in production.
+// on any page in development, including /home where the real app instances
+// are not mounted. Renders nothing in production.
 //
 //   P - welcome tour preview
 //   O - "Get started" checklist card preview (click rows to toggle checks)

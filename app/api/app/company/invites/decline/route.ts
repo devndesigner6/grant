@@ -4,7 +4,7 @@ import { declineInvite } from "@/lib/company-invites";
 import { recordAuditEvent } from "@/lib/audit-log";
 
 // POST /api/app/company/invites/decline { token } - the signed-in user declines
-// an invite addressed to their email. Marks it revoked (freeing the seat) after
+// an invite addressed to their email. Marks it declined after
 // an email-match check in the lib.
 export async function POST(request: Request) {
   const auth = await requireApiAuth();

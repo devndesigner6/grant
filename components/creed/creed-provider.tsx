@@ -257,7 +257,7 @@ function mergeExternalState(
   return {
     ...current,
     // Company / switcher context always reflects the server (which Creed is
-    // active, the roster, permissions, billing/freeze state).
+    // active, the roster, and permissions).
     creedId: incoming.creedId,
     creedType: incoming.creedType,
     creeds: incoming.creeds,

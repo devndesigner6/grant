@@ -11,7 +11,7 @@ import { getDisplayName } from "@/lib/user-name";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 // POST /api/app/company/invites { creedId, email, role } - owner/admin.
-// Creates a pending invite (seat + freeze checked in the lib) and emails the
+// Creates a pending invite and emails the
 // branded link. Email failure does not fail the request: the invite is created
 // and can be resent.
 export async function POST(request: Request) {
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
   const result = await createInvite({ creedId, actorUserId: auth.user.id, email, role });
   if (!result.ok) {
-    const status = result.code === "forbidden" ? 403 : result.code === "no_seats" ? 409 : 400;
+    const status = result.code === "forbidden" ? 403 : 400;
     return NextResponse.json({ error: result.error, code: result.code }, { status });
   }
 

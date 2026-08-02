@@ -63,7 +63,7 @@ export const resolveActiveCreed = cache(async function resolveActiveCreed(
 /**
  * The active Creed's id if it is a company Creed the caller OWNS, else null.
  *
- * Company AI billing (credits, usage, BYOK) is owner-only, and the personal AI
+ * Company AI settings and usage are owner-managed, and the personal AI
  * routes reuse this to decide whether to serve company data: a null result means
  * "treat this request as personal" (personal Creed, a non-owner member, or no
  * Creed), which preserves the exact personal behaviour for everyone else.
@@ -97,8 +97,8 @@ export async function resolveManagedCompanyCreedId(
 
 /**
  * The active Creed if it is a company Creed the caller belongs to (any role),
- * with that role, else null. Used by the read-only company AI routes (credits /
- * usage / settings / balance): every member may VIEW the company's model usage,
+ * with that role, else null. Used by the read-only company AI routes (usage /
+ * settings): every member may view the company's model usage,
  * while mutations stay gated on {@link resolveOwnedCompanyCreedId}. The role lets
  * a read strip owner-only detail (e.g. purchase history) for plain members.
  */
@@ -115,7 +115,7 @@ export async function resolveMemberCompanyCreed(
 /**
  * A specific company Creed the caller belongs to (any role), by explicit id -
  * independent of the active-Creed cookie. Company settings passes its own
- * creedId to the AI-data reads (credits / usage / settings) so the company card
+ * creedId to the AI-data reads (usage / settings) so the company card
  * always loads THAT company's pooled figures, never a cookie-timing fallback to
  * the caller's personal balance. Returns null if the id is not a company Creed
  * the user is a member of. `client` reads membership under RLS.

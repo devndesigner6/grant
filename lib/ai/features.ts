@@ -1,4 +1,4 @@
-// The AI features that spend credits. "analysis" and "panel" are wired to live
+// The AI features available through a configured OpenRouter key. "analysis" and "panel" are wired to live
 // features today; "tab" is planned (see .agents/context/roadmap.md) and already
 // carries its display metadata + model env mapping, so shipping it is a new
 // call site, not a new subsystem.
@@ -13,7 +13,7 @@ export type AiFeature = "analysis" | "tab" | "panel";
 // Canonical order, used for stable chart stacking and iteration.
 export const AI_FEATURES: readonly AiFeature[] = ["analysis", "tab", "panel"];
 
-// Display metadata for the spend chart and the credit history. One colour per
+// Display metadata for the spend chart. One colour per
 // feature; the chart stacks by feature, not by model.
 export const AI_FEATURE_META: Record<AiFeature, { label: string; color: string }> = {
   analysis: { label: "Analysis", color: "#2563EB" },

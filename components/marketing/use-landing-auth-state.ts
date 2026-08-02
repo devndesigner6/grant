@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 // Single source of truth for "is the visitor signed in?" on marketing
-// pages. Used by both the chrome header and the pricing card so they
+// pages. Used by the shared marketing chrome so it can
 // agree about visibility transitions during sign-in / sign-out without
 // each spinning up its own auth listener.
 export type LandingAuthState = "loading" | "signed-in" | "signed-out";

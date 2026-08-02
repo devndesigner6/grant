@@ -11,9 +11,9 @@ import {
 } from "@/lib/seo/structured-data";
 
 const PATH = "/company";
-const TITLE = "Company plan";
+const TITLE = "Company workspaces";
 const DESCRIPTION =
-  "The Creed Company plan: one shared Company Creed every member's agents read, with roles, section permissions, an activity view, and admin controls. From $129/mo for 10 seats.";
+  "One shared Company Creed every member's agents read, with roles, section permissions, an activity view, and admin controls.";
 const DATE_MODIFIED = "2026-07-07";
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export default function CompanyPage() {
         data={graph(
           webPageSchema({
             path: PATH,
-            name: "Creed Company plan",
+            name: "Creed Company workspaces",
             description: DESCRIPTION,
             dateModified: DATE_MODIFIED,
           }),

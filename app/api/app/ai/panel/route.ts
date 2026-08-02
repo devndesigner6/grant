@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireApiAuth } from "@/lib/api-auth";
-import {
-  resolveAiCredential,
-  deductCredits,
-  resolveCompanyAiCredential,
-  deductCompanyCredits,
-  cancelCreditReservation,
-} from "@/lib/ai/credits";
+import { resolveAiCredential, resolveCompanyAiCredential } from "@/lib/ai/credentials";
 import { callOpenRouter, parseJsonObject } from "@/lib/ai/openrouter";
 import { recordAiUsage } from "@/lib/ai/persistence";
 import { resolveActiveCreed } from "@/lib/creed-context";
@@ -46,7 +40,6 @@ export async function POST(request: Request) {
     );
   }
 
-  let reservationId: string | undefined;
   try {
     const body = (await request.json()) as {
       mode?: string;
@@ -80,7 +73,7 @@ export async function POST(request: Request) {
     // what the caller sends.
     // Load the active Creed (personal or company). Company state is
     // permission-filtered (Hidden sections already stripped) so the panel
-    // respects the member's access, and AI meters on the company's credits.
+    // respects the member's access.
     const active = await resolveActiveCreed(auth.supabase, auth.user);
     const companyId =
       active && active.creeds.find((c) => c.id === active.creedId)?.type === "company"
@@ -133,7 +126,6 @@ export async function POST(request: Request) {
     const credential = companyId
       ? await resolveCompanyAiCredential(companyId, "panel")
       : await resolveAiCredential(auth.supabase, auth.user.id, "panel");
-    reservationId = credential.reservationId;
     const result = await callOpenRouter({
       apiKey: credential.apiKey,
       modelId: credential.modelId,
@@ -147,7 +139,7 @@ export async function POST(request: Request) {
       messages,
     });
 
-    // Parse before billing, so a malformed reply never charges the user.
+    // Parse before recording usage so malformed replies do not produce activity.
     let parsed: unknown;
     try {
       parsed = parseJsonObject(result.content);
@@ -173,49 +165,15 @@ export async function POST(request: Request) {
       modelOk &&
       (mode === "ask" ? Boolean(answer) || (actions?.length ?? 0) > 0 : (actions?.length ?? 0) > 0);
 
-    let creditBalanceUsd: number | null = null;
-    let chargedMicroUsd: number | null = null;
-    if (credential.mode === "credits") {
-      const debit = companyId
-        ? await deductCompanyCredits({
-            creedId: companyId,
-            spentBy: auth.user.id,
-            costUsd: result.costUsd,
-            feature: "panel",
-            modelId: credential.modelId,
-            reservationId: credential.reservationId,
-          })
-        : await deductCredits({
-            userId: auth.user.id,
-            costUsd: result.costUsd,
-            feature: "panel",
-            modelId: credential.modelId,
-            reservationId: credential.reservationId,
-          });
-      if (debit) {
-        creditBalanceUsd = debit.balanceUsd;
-        chargedMicroUsd = debit.chargedMicroUsd;
-      }
-    }
-
-    if (credential.mode === "byok" || creditBalanceUsd !== null) {
-      try {
-        await recordAiUsage({
-          client: auth.supabase,
-          userId: auth.user.id,
-          creedId: companyId,
-          feature: "panel",
-          modelId: credential.modelId,
-          modelQuality: result.modelQuality,
-          inputTokens: result.inputTokens,
-          outputTokens: result.outputTokens,
-          costUsd: result.costUsd,
-          chargedMicroUsd: chargedMicroUsd ?? Math.round(result.costUsd * 1_000_000),
-          aiMode: credential.mode,
-        });
-      } catch {
-        // Best-effort; a completed, charged call must not fail on a log hiccup.
-      }
+    try {
+      await recordAiUsage({
+        client: auth.supabase, userId: auth.user.id, creedId: companyId,
+        feature: "panel", modelId: credential.modelId, modelQuality: result.modelQuality,
+        inputTokens: result.inputTokens, outputTokens: result.outputTokens,
+        costUsd: result.costUsd, chargedMicroUsd: Math.round(result.costUsd * 1_000_000), aiMode: "byok",
+      });
+    } catch {
+      // Usage logging is best-effort and must not fail a completed request.
     }
 
     const payload: PanelResult = {
@@ -230,11 +188,8 @@ export async function POST(request: Request) {
       actions: ok ? actions ?? [] : [],
     };
     return NextResponse.json(payload);
-  } catch {
-    await cancelCreditReservation(reservationId);
-    return NextResponse.json(
-      { error: "That didn't go through. Try again" },
-      { status: 400 }
-    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "That didn't go through. Try again";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }

@@ -5,13 +5,13 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { SupabaseLikeClient } from "@/lib/supabase/types";
 
-// Company onboarding. The owner lands here after buying Company (payment/success
-// routes here when the Creed still has onboarding_stage set). Gated: signed-in
+// Company onboarding. The owner lands here while the Creed has an
+// onboarding_stage set. Gated: signed-in
 // owner of a company Creed that is still being set up.
 export const dynamic = "force-dynamic";
 
 export default async function CompanyOnboardingPage() {
-  if (!isSupabaseConfigured()) redirect("/pricing");
+  if (!isSupabaseConfigured()) redirect("/");
 
   const supabase = await createSupabaseServerClient();
   const {

@@ -26,8 +26,8 @@ const geistMono = Geist_Mono({
 //   and the search-result favicon Google reads stays the one users see in tabs.
 // `title.default` is the brand title used by any page that doesn't set its
 // own (the root redirect and /home both fall back to it). `title.template`
-// suffixes per-page titles, so individual pages set a bare title ("Pricing")
-// and get "Pricing | Creed" automatically. A page that wants an exact title
+// suffixes per-page titles, so individual pages set a bare title
+// and get a consistent product title. A page that wants an exact title
 // uses `title: { absolute: "..." }`.
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),

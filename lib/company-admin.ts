@@ -102,6 +102,7 @@ export async function setMemberRole(params: {
   return { ok: true };
 }
 
+// End of company administration helpers.
 /**
  * Remove a member. Owner/admin only. An admin can remove members but NOT another
  * admin (only the owner manages admins); the owner can remove anyone but
@@ -305,9 +306,7 @@ export async function updateCompanyGeneral(params: {
 
 /**
  * Transfer ownership to another member. The old owner becomes admin, the target
- * becomes owner, and both owner_user_id columns (creeds + creed_company_billing)
- * follow. Owner-only. Frozen billing does NOT block this: an owner must be able
- * to hand off a lapsed company so the new owner can fix billing.
+ * becomes owner, and the Creed owner column follows. Owner-only.
  */
 export async function transferOwnership(params: {
   creedId: string;
@@ -391,7 +390,6 @@ export async function setCompanyByok(params: {
   creedId: string;
   actor: User;
   key: string | null;
-  mode?: "credits" | "byok";
 }): Promise<AdminResult> {
   const db = admin();
   const actorRole = await getCreedRole(db, params.actor.id, params.creedId);
@@ -408,14 +406,14 @@ export async function setCompanyByok(params: {
     row.openrouter_key_hash = null;
     row.api_key_last_four = null;
     row.key_status = "missing";
-    row.ai_mode = params.mode ?? "credits";
+    row.ai_mode = "byok";
   } else {
     const key = params.key.trim();
     row.encrypted_openrouter_key = encryptSecret(key);
     row.openrouter_key_hash = hashSecret(key);
     row.api_key_last_four = key.slice(-4);
     row.key_status = "present";
-    row.ai_mode = params.mode ?? "byok";
+    row.ai_mode = "byok";
   }
   const { error } = await db
     .from("creed_company_ai_settings")
@@ -433,46 +431,5 @@ export async function setCompanyByok(params: {
     `${actorName(params.actor)} updated the company BYOK settings`,
     "byok",
   );
-  return { ok: true };
-}
-
-/**
- * Switch the company between credits and BYOK without touching the stored key
- * (owner-only). A partial upsert leaves encrypted_openrouter_key / key_status
- * intact, so toggling back to BYOK does not require re-entering the key - exactly
- * how the personal mode toggle behaves.
- */
-export async function setCompanyAiMode(params: {
-  creedId: string;
-  actor: User;
-  mode: "credits" | "byok";
-}): Promise<AdminResult> {
-  const db = admin();
-  const actorRole = await getCreedRole(db, params.actor.id, params.creedId);
-  if (actorRole !== "owner") {
-    return {
-      ok: false,
-      error: "Only the owner can manage AI billing.",
-      status: 403,
-    };
-  }
-  const { error } = await db
-    .from("creed_company_ai_settings")
-    .upsert(
-      {
-        creed_id: params.creedId,
-        ai_mode: params.mode,
-        updated_by: params.actor.id,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "creed_id" },
-    );
-  if (error)
-    return { ok: false, error: "Could not update AI settings.", status: 500 };
-  await recordAuditEvent({
-    userId: params.actor.id,
-    action: "company.ai_mode_updated",
-    metadata: { creedId: params.creedId, mode: params.mode },
-  });
   return { ok: true };
 }

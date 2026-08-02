@@ -24,7 +24,7 @@ const sections: TermsSection[] = [
     id: "scope",
     title: "1. Who these Terms apply to",
     paragraphs: [
-      "These Terms apply to anyone who accesses or uses Creed, whether during a free period, beta period, or paid access period.",
+      "These Terms apply to anyone who accesses or uses Creed.",
     ],
   },
   {
@@ -68,36 +68,22 @@ const sections: TermsSection[] = [
     ],
   },
   {
-    id: "payments",
-    title: "6. Payments",
-    paragraphs: [
-      "Creed is currently offered free of charge. In future, Creed may be offered as a one-time purchase or under other paid access terms.",
-      "If and when paid access is introduced:",
-    ],
-    bullets: [
-      "pricing will be shown clearly before purchase",
-      "payments will be processed by Stripe or another payment provider",
-      "payment card details will not be stored directly by Creed",
-    ],
-    note: "Unless required by law, payments are non-refundable.",
-  },
-  {
     id: "commercial-use",
-    title: "7. Commercial use",
+    title: "6. Commercial use",
     paragraphs: ["You may use Creed for personal or commercial work."],
   },
   {
     id: "third-party",
-    title: "8. Third-party services",
+    title: "7. Third-party services",
     paragraphs: [
-      "Creed relies on third-party services to operate parts of the product, including services for hosting, authentication, payments, and AI processing.",
+      "Creed relies on third-party services to operate parts of the product, including services for hosting, authentication, and AI processing.",
       "Creed is not responsible for outages, errors, or changes caused by third-party providers.",
       "Your use of those services may also be subject to their own terms and policies.",
     ],
   },
   {
     id: "availability",
-    title: "9. Availability and changes",
+    title: "8. Availability and changes",
     paragraphs: [
       "Creed is provided on an “as is” and “as available” basis.",
       "Creed may change, improve, suspend, or remove features at any time, including during early or free stages of the product.",
@@ -106,7 +92,7 @@ const sections: TermsSection[] = [
   },
   {
     id: "termination",
-    title: "10. Suspension and termination",
+    title: "9. Suspension and termination",
     paragraphs: [
       "Creed may suspend or terminate access to the service if:",
     ],

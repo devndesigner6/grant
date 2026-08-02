@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
   const result = await acceptInvite(token, auth.user);
   if (!result.ok) {
-    const status = result.code === "no_seats" ? 409 : result.code === "email_mismatch" ? 403 : 400;
+    const status = result.code === "email_mismatch" ? 403 : 400;
     return NextResponse.json({ error: result.error, code: result.code }, { status });
   }
 
