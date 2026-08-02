@@ -23,7 +23,7 @@ export async function connectCreed(
   await provider.load();
 
   const makeConnection = async (): Promise<{ client: Client; transport: StreamableHTTPClientTransport }> => {
-    const client = new Client({ name: "grant-cli", version: CLI_VERSION }, { capabilities: {} });
+    const client = new Client({ name: "Grant CLI", version: CLI_VERSION }, { capabilities: {} });
     const transport = new StreamableHTTPClientTransport(new URL(serverUrl), {
       authProvider: provider,
       requestInit: agent

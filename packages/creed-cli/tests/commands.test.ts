@@ -8,7 +8,7 @@ const execFileAsync = promisify(execFile);
 const binPath = fileURLToPath(new URL("../src/bin.js", import.meta.url));
 
 test("help and version do not depend on server configuration", async () => {
-  const env = { ...process.env, CREED_MCP_URL: "not a URL" };
+  const env = { ...process.env, GRANT_MCP_URL: "not a URL" };
   const help = await execFileAsync(process.execPath, [binPath, "--help"], { env });
   const version = await execFileAsync(process.execPath, [binPath, "--version"], { env });
 
@@ -19,7 +19,7 @@ test("help and version do not depend on server configuration", async () => {
 test("invalid command shapes fail before attempting OAuth", async () => {
   await assert.rejects(
     () => execFileAsync(process.execPath, [binPath, "call"], {
-      env: { ...process.env, CREED_MCP_URL: "not a URL" },
+      env: { ...process.env, GRANT_MCP_URL: "not a URL" },
     }),
     (error: unknown) => {
       const failure = error as { code?: number; stderr?: string };

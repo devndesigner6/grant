@@ -53,6 +53,8 @@ export async function POST(request: Request, ctx: Ctx) {
   const creedId = await resolveCreedId(id);
   if (!creedId) return NextResponse.json({ error: "Invite not found." }, { status: 404 });
 
+  const siteUrl = getSiteUrl();
+
   const rotated = await rotateInviteToken({ creedId, actorUserId: auth.user.id, inviteId: id });
   if (!rotated.ok) return NextResponse.json({ error: rotated.error }, { status: 403 });
 
@@ -63,7 +65,7 @@ export async function POST(request: Request, ctx: Ctx) {
     .eq("id", creedId)
     .maybeSingle()) as { data: { name: string } | null };
   const inviterName = getDisplayName(auth.user, "A teammate");
-  const siteUrl = getSiteUrl();
+  const inviteUrl = `${siteUrl}/invite/${rotated.token}`;
   const companyName = creed?.name ?? "the company";
   const sent = await sendEmail({
     to: rotated.email,
@@ -71,7 +73,7 @@ export async function POST(request: Request, ctx: Ctx) {
     html: renderCompanyInviteEmail({
       companyName,
       inviterName,
-      acceptUrl: `${siteUrl}/invite/${rotated.token}`,
+      acceptUrl: inviteUrl,
       siteUrl,
     }),
   });
@@ -82,5 +84,5 @@ export async function POST(request: Request, ctx: Ctx) {
     metadata: { creedId, inviteId: id, emailSent: sent.ok },
     request,
   });
-  return NextResponse.json({ ok: true, emailSent: sent.ok });
+  return NextResponse.json({ ok: true, inviteUrl, emailSent: sent.ok });
 }

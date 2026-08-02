@@ -7,11 +7,8 @@
     "build": "next build",
     "start": "NODE_OPTIONS=--max-http-header-size=65536 next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit -p .",
     "test": "node --experimental-strip-types scripts/run-root-tests.ts",
-    "bench": "node --experimental-strip-types bench/cli.ts",
-    "bench:generate": "node --experimental-strip-types bench/cli.ts --generate",
-    "bench:prune": "node --experimental-strip-types bench/cli.ts --prune",
-    "bench:regrade": "node --experimental-strip-types bench/cli.ts --regrade",
     "indexnow": "node --experimental-strip-types scripts/indexnow-ping.ts"
   },
   "dependencies": {

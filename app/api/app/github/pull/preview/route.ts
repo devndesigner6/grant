@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       // Pulling GitHub into a shared company file (an import that overwrites
       // sections) is not supported yet; company managers push out only.
       if (await resolveManagedCompanyCreedId(supabase, user)) {
-        throw new Error("Pulling from GitHub into a company Creed isn't supported yet. You can push to GitHub.");
+        throw new Error("GitHub import is not available for company workspaces yet. You can still push the Grant profile to GitHub.");
       }
       const configuredRepo = getConfiguredRepo(versionControl);
 
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       );
 
       if (!remoteFile) {
-        throw new Error("No creed.md in this repo yet. Push first");
+        throw new Error("No Grant profile file is in this repository yet. Push first.");
       }
 
       const parsed = parseCreedMarkdown(remoteFile.content);
@@ -64,10 +64,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json(payload);
   } catch (error) {
-    const message = "Could not preview GitHub import.";
+    const message = error instanceof Error && error.message.includes("company workspaces")
+      ? error.message
+      : "Could not preview the Grant profile import.";
     return NextResponse.json(
       { error: message },
-      { status: error instanceof Error && error.message === "Unauthorized" ? 401 : error instanceof Error && error.message.includes("No creed.md") ? 404 : 400 }
+      { status: error instanceof Error && error.message === "Unauthorized" ? 401 : error instanceof Error && error.message.includes("Grant profile file") ? 404 : error instanceof Error && error.message.includes("company workspaces") ? 409 : 400 }
     );
   }
 }

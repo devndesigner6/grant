@@ -57,7 +57,7 @@ export async function PUT(request: Request) {
     const activeEntry = active.creeds.find((c) => c.id === active.creedId);
     if (activeEntry?.type === "company") {
       return NextResponse.json(
-        { error: "Company Creeds save per section.", code: "companyMode" },
+        { error: "Company Grant profiles save per section.", code: "companyMode" },
         { status: 409 },
       );
     }
@@ -90,7 +90,7 @@ export async function PUT(request: Request) {
       error instanceof Error ? error : new Error(String(error)),
     );
     return NextResponse.json(
-      { error: "Could not save Creed." },
+      { error: "Could not save the Grant profile." },
       { status: 500 },
     );
   }

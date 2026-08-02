@@ -27,6 +27,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
 SUPABASE_SECRET_KEY=<service-role-key>
 GRANT_ENCRYPTION_SECRET=$(openssl rand -base64 32)
+GRANT_CSRF_SECRET=$(openssl rand -base64 32)
 GRANT_HEALTH_SECRET=$(openssl rand -base64 32)
 ```
 
@@ -36,7 +37,7 @@ Grant is free for authenticated users. AI features use the encrypted OpenRouter 
 
 Open `/connections` and add the Grant MCP URL to your agent as a custom connector. Grant is an OAuth 2.1 authorization server, so spec-compliant MCP clients can connect from the server URL and authorize in the browser.
 
-Grant supports Claude Code, Codex, Cursor, ChatGPT, OpenCode, and custom MCP clients. Connected agents can read permitted context and propose or make permitted edits. Grant CLI source remains in `packages/creed-cli/` while that legacy folder name is retained for repository compatibility. Its publication target is `grant-cli` with the `grant` command.
+Grant supports Claude Code, Codex, Cursor, ChatGPT, OpenCode, and custom MCP clients. Connected agents can read permitted context and propose or make permitted edits. Grant CLI source remains in `packages/creed-cli/` while that legacy folder name is retained for repository compatibility. Install the published CLI with `npm install --global @devndesigner/grant-cli`, then run `grant`.
 
 ## Stack
 
@@ -83,7 +84,7 @@ Use `http://localhost:3000` locally. After Vercel provides the real deployment U
 
 OpenRouter is BYOK-only. Users and company owners save encrypted keys in Settings; `ANALYSIS_MODEL`, `TAB_MODEL`, and `PANEL_MODEL` select models when set. Without a key, Grant shows “Add your OpenRouter key in Settings.” Invitations always create a real acceptance URL. Add `RESEND_API_KEY` and `RESEND_FROM_EMAIL` later for branded email delivery; otherwise copy the real invite link. Verify detailed health with `X-Grant-Health-Secret`.
 
-After verification and your approval, publish the CLI from `packages/creed-cli` with `npm publish --access public`.
+The published CLI package is `@devndesigner/grant-cli`. Build and test the source in `packages/creed-cli` before publishing a new version with `npm publish --access public`.
 
 ## Contributing
 

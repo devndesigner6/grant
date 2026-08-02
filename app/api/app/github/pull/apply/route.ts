@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     // persist, which is blocked for company Creeds; guard it explicitly.
     if (await resolveManagedCompanyCreedId(supabase, user)) {
       return NextResponse.json(
-        { error: "Pulling from GitHub into a company Creed isn't supported yet. You can push to GitHub." },
+        { error: "GitHub import is not available for company workspaces yet. You can still push the Grant profile to GitHub." },
         { status: 400 }
       );
     }
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    const message = "Could not import Creed from GitHub.";
+    const message = "Could not import the Grant profile from GitHub.";
     return NextResponse.json(
       { error: message },
       { status: error instanceof Error && error.message === "Unauthorized" ? 401 : 400 }

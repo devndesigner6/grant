@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as PushBody;
     const markdown = body.markdown?.trim();
     const localHash = body.localHash?.trim();
-    const message = body.message?.trim() || "Update Creed";
+    const message = body.message?.trim() || "Update Grant profile";
 
     if (!markdown || !localHash) {
       return NextResponse.json({ error: "Missing markdown or local hash." }, { status: 400 });
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result);
   } catch (error) {
-    const message = "Could not push Creed to GitHub.";
+    const message = "Could not push the Grant profile to GitHub.";
     return NextResponse.json(
       { error: message },
       { status: error instanceof Error && error.message === "Unauthorized" ? 401 : 400 }

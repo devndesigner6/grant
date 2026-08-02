@@ -30,8 +30,8 @@ export async function POST(request: Request) {
     }
 
     // Every report is keyed by creed_id: a company report by the shared company
-    // creed (billed to the company wallet, owner/admin-run), a personal report by
-    // the user's personal creed (billed to their wallet, unchanged). Every member
+    // profile, with owner/admin initiation for company workspaces and a personal
+    // profile for individual workspaces. Every member
     // can read the shared company baseline for the sections they can see (their
     // client only sends visible sections, so hidden-section scores never reach
     // them).
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     const companyId = companyEntry ? active!.creedId : undefined;
     const reportCreedId = companyId ?? (await getPersonalCreedId(admin, auth.user.id));
     if (!reportCreedId) {
-      return NextResponse.json({ error: "No Creed found for this account." }, { status: 400 });
+      return NextResponse.json({ error: "No Grant profile found for this account." }, { status: 400 });
     }
 
     if (body.readOnly) {
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Could not analyze Creed quality.";
+    const message = error instanceof Error ? error.message : "Could not analyze Grant profile quality.";
     return NextResponse.json(
       { error: message },
       { status: 400 }

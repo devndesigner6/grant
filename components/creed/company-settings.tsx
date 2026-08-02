@@ -208,6 +208,7 @@ export function CompanySettings() {
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviting, setInviting] = useState(false);
+  const [manualInviteLink, setManualInviteLink] = useState<string | null>(null);
   // Drives the send-icon hover animation on the Invite button.
   const inviteIcon = useAnimatedIconControls();
 
@@ -551,14 +552,22 @@ export function CompanySettings() {
       error?: string;
       emailSent?: boolean;
       inviteId?: string;
+      inviteUrl?: string;
     };
     if (!res.ok) {
       toast.error(data.error ?? "Invite failed.");
     } else {
       // The invite is created whether delivery succeeds or not. The toast only
       // reports whether the email was sent.
-      if (data.emailSent) toast.success("Invite sent.");
-      else toast.error("Invite failed to send.");
+      if (data.emailSent) {
+        setManualInviteLink(null);
+        toast.success("Invite sent.");
+      } else if (data.inviteUrl) {
+        setManualInviteLink(data.inviteUrl);
+        toast.message("Email is not configured. Copy the invite link to deliver it manually.");
+      } else {
+        toast.error("The invite was created, but email delivery was unavailable.");
+      }
       // Show the pending row instantly; refreshState then reconciles it (and the
       // prune effect drops this optimistic copy once the server echoes the id).
       if (data.inviteId) {
@@ -958,6 +967,34 @@ export function CompanySettings() {
             )}
           </Button>
         </div>
+        {manualInviteLink ? (
+          <div className="mb-5 rounded-xl border border-[var(--creed-border)] bg-[var(--creed-surface-raised)] p-3">
+            <p className="text-[13px] leading-5 text-[var(--creed-text-secondary)]">
+              Email is not configured. Copy this invite link to deliver it manually.
+            </p>
+            <div className="mt-3 flex gap-2">
+              <Input
+                readOnly
+                value={manualInviteLink}
+                aria-label="Manual company invite link"
+                className={`${FIELD_INPUT} min-w-0 flex-1 text-[13px]`}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-md border-[var(--creed-border)] px-3"
+                onClick={() => {
+                  void navigator.clipboard.writeText(manualInviteLink).then(
+                    () => toast.success("Invite link copied."),
+                    () => toast.error("Could not copy the invite link."),
+                  );
+                }}
+              >
+                Copy link
+              </Button>
+            </div>
+          </div>
+        ) : null}
       ) : null}
 
       <div className="flex flex-col divide-y divide-[var(--creed-border)]">

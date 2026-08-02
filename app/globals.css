@@ -588,7 +588,7 @@
 }
 
 /* Syntax highlighting (lowlight / highlight.js classes). Same hues as the
-   GitHub-style palette, pushed more saturated so CLI snippets on /bench read
+   GitHub-style palette, pushed more saturated so CLI snippets read
    clearly on both light and dark canvases. */
 .creed-code-block .hljs-comment,
 .creed-code-block .hljs-quote {

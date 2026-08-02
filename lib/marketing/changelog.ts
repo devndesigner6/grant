@@ -12,23 +12,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
-    date: "2026-07-27",
-    title: "Grant Bench",
-    body: "A public leaderboard that measures how well frontier models use Grant through its real MCP tools. Pass@1 is plotted against average cost per task, with the full task suite and methodology on /bench.",
-    highlights: [
-      "Official runs cover 24 tasks across single-tool, multi-tool, and adversarial families.",
-      "Each model is scored at low, medium, and high effort, three trials each.",
-      "Results stay local as traces; only the generated chart ships with the site.",
-      "Open the chart and task tables at /bench.",
-    ],
-  },
-  {
     date: "2026-07-14",
     title: "Grant CLI",
     body: "Grant CLI brings the complete live MCP surface to your terminal through the same browser OAuth flow as the web app.",
     highlights: [
-      "Install globally with npm install --global grant-cli, then run grant.",
-      "Run without installing with npx grant-cli.",
+      "Install globally with npm install --global @devndesigner/grant-cli, then run grant.",
+      "Run without installing with npx @devndesigner/grant-cli.",
       "Interactive and one-shot commands for tools, resources, and prompts.",
       "JSON output for scripts and coding agents, with diagnostics kept on stderr.",
       "Token-bound per-agent attribution keeps CLI status and last-seen times separate from MCP connections.",

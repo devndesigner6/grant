@@ -46,7 +46,6 @@ const navGroups: { label: string; items: NavItem[] }[] = [
     label: "Resources",
     items: [
       { label: "Docs", href: "/docs" },
-      { label: "Bench", href: "/bench" },
       { label: "Changelog", href: "/changelog" },
     ],
   },

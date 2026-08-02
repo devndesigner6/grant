@@ -34,6 +34,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "A valid email is required." }, { status: 400 });
   }
 
+  const siteUrl = getSiteUrl();
+
   const result = await createInvite({ creedId, actorUserId: auth.user.id, email, role });
   if (!result.ok) {
     const status = result.code === "forbidden" ? 403 : 400;
@@ -48,7 +50,7 @@ export async function POST(request: Request) {
     .eq("id", creedId)
     .maybeSingle()) as { data: { name: string } | null };
   const inviterName = getDisplayName(auth.user, "A teammate");
-  const siteUrl = getSiteUrl();
+  const inviteUrl = `${siteUrl}/invite/${result.token}`;
   const companyName = creed?.name ?? "the company";
   const sent = await sendEmail({
     to: email.trim(),
@@ -56,7 +58,7 @@ export async function POST(request: Request) {
     html: renderCompanyInviteEmail({
       companyName,
       inviterName,
-      acceptUrl: `${siteUrl}/invite/${result.token}`,
+      acceptUrl: inviteUrl,
       siteUrl,
     }),
   });
@@ -68,5 +70,5 @@ export async function POST(request: Request) {
     request,
   });
 
-  return NextResponse.json({ ok: true, inviteId: result.inviteId, emailSent: sent.ok });
+  return NextResponse.json({ ok: true, inviteId: result.inviteId, inviteUrl, emailSent: sent.ok });
 }

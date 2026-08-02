@@ -36,7 +36,7 @@ Grant is a small, open-source codebase. The pieces most worth scrutinising:
   and quality analyzer accept user-controlled input. Prompt injection
   that exfiltrates other users' data is in scope; injection that simply
   produces silly output is not.
-- **CSP and headers** — `next.config.ts` defines the policy; gaps are in
+- **CSP and headers** — `proxy.ts` defines the policy; gaps are in
   scope.
 - **Supabase RLS policies** — `supabase/migrations/*.sql`. Any policy
   that lets one signed-in user read or write another user's rows is in
@@ -61,7 +61,7 @@ If you fork Grant and run your own instance, please:
    transition.
 2. Use distinct Supabase service-role keys per environment and never
    commit them.
-3. Keep `CREED_CSP_ENFORCE=1` set in production so the Content Security
+3. Keep `GRANT_CSP_ENFORCE=1` set in production so the Content Security
    Policy is enforced rather than report-only.
 4. Apply every migration in `supabase/migrations/` before opening the app
    to real users — RLS policies live there and the app trusts them.

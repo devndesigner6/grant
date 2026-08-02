@@ -25,7 +25,7 @@ export function getCliConnectionPresentation(
   connectionId: string,
   connectionName: string,
 ): ConnectionPresentation {
-  const command = `npx grant-cli --agent ${connectionId} call read_creed --json`;
+  const command = `npx @devndesigner/grant-cli --agent ${connectionId} call read_creed --json`;
   return {
     hint: `Use Grant CLI with ${connectionName}. The first run opens the Grant OAuth screen, then the same command reads your live context whenever the agent needs it.`,
     primary: {

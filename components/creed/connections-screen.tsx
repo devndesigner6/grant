@@ -414,7 +414,7 @@ export function ConnectionsScreen() {
             </div>
 
             <div className="pointer-events-none relative z-10 mt-4 w-fit max-w-full self-start rounded-[var(--radius-md)] border border-[var(--creed-border)] px-3 py-2 font-mono text-[13px] text-[var(--creed-text-primary)]">
-              <span className="block break-all">npx grant-cli</span>
+              <span className="block break-all">npx @devndesigner/grant-cli</span>
             </div>
 
             <div className="relative z-10 mt-4 flex flex-wrap items-center gap-3">
@@ -424,7 +424,7 @@ export function ConnectionsScreen() {
                 className="creed-copy-cycle min-w-[116px] justify-center rounded-md px-4 text-white"
                 onClick={() => {
                   setConnectionMode("cli");
-                    void copyValue("cli-command", "npx grant-cli");
+                    void copyValue("cli-command", "npx @devndesigner/grant-cli");
                 }}
               >
                 {copied === "cli-command" ? (

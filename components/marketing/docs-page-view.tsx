@@ -181,8 +181,8 @@ const sections: DocsSection[] = [
       "It discovers tools, resources, prompts, descriptions, and input schemas from the live Grant MCP server.",
     ],
     bullets: [
-      "Install globally with npm install --global grant-cli, then run grant.",
-      "Run without installing with npx grant-cli.",
+      "Install globally with npm install --global @devndesigner/grant-cli, then run grant.",
+      "Run without installing with npx @devndesigner/grant-cli.",
       "Check the connection and live capability counts with grant doctor.",
       "Use grant status for local credential state; use grant doctor when you need a live server check.",
       "List exact tool names with grant tools, or call one with grant call read_creed.",
