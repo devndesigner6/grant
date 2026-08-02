@@ -1443,6 +1443,19 @@ function buildAgentContractPrologue(docsUrl: string): string {
   return built;
 }
 
+function getContractDocsUrl(): string {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "");
+  if (siteUrl) return `${siteUrl}/docs`;
+
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:3000/docs";
+  }
+
+  throw new Error(
+    "NEXT_PUBLIC_SITE_URL is not set. Set it to the deployed Grant origin so MCP documentation URLs resolve correctly."
+  );
+}
+
 export function buildHiddenAgentGuidanceMarkdown(options?: {
   proposalUrl?: string;
   proposalToken?: string;
@@ -1477,7 +1490,7 @@ export function buildHiddenAgentGuidanceMarkdown(options?: {
   const anyDirect = directSections.length > 0;
   const modeIsMixed =
     new Set(sectionPermissions.map((entry) => entry.permission)).size > 1;
-  const docsUrl = options?.docsUrl ?? `${getSiteUrl()}/docs`;
+  const docsUrl = options?.docsUrl ?? getContractDocsUrl();
   const proposalTargetSections = [
     ...new Set([
       ...writableSections,
