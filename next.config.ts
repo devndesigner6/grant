@@ -47,6 +47,14 @@ const nextConfig: NextConfig = {
   ...(distDir ? { distDir } : {}),
   reactStrictMode: true,
   poweredByHeader: false,
+  experimental: {
+    optimizePackageImports: ["radix-ui"],
+    // App routes render dynamically for CSP nonces. Cache their static shells
+    // briefly while the provider continues to synchronize live workspace state.
+    staleTimes: {
+      dynamic: 180,
+    },
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     // Next 16 requires explicit allow-listing of any custom quality used via

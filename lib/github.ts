@@ -185,7 +185,9 @@ async function githubRequest<T>(
     signal: init?.signal ?? AbortSignal.timeout(10_000),
   });
 
-  if (init?.allowNotFound && response.status === 404) {
+  // GitHub returns 409 rather than 404 for a repository without a first
+  // commit. Treat it as an absent profile file so the first push can create it.
+  if (init?.allowNotFound && (response.status === 404 || response.status === 409)) {
     return null;
   }
 

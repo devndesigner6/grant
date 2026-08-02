@@ -142,7 +142,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result);
   } catch (error) {
-    const message = "Could not push the Grant profile to GitHub.";
+    const message =
+      error instanceof Error && error.message && error.message !== "Unauthorized"
+        ? error.message
+        : "Could not push the Grant profile to GitHub.";
     return NextResponse.json(
       { error: message },
       { status: error instanceof Error && error.message === "Unauthorized" ? 401 : 400 }

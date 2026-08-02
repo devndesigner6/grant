@@ -473,7 +473,25 @@
 }
 
 .ProseMirror .creed-list-ordered {
-  list-style-type: decimal;
+  list-style: none;
+  counter-reset: creed-ordered-list;
+  padding-left: 0;
+}
+
+.ProseMirror .creed-list-ordered > li {
+  position: relative;
+  padding-left: 1.3em;
+  counter-increment: creed-ordered-list;
+}
+
+.ProseMirror .creed-list-ordered > li::before {
+  content: counter(creed-ordered-list) ".";
+  position: absolute;
+  left: -0.85em;
+  width: 1.75em;
+  color: var(--section-accent-bar, var(--creed-text-secondary));
+  font-weight: 500;
+  text-align: right;
 }
 
 /* Reusable squircle bullet list for plain JSX lists (docs, marketing, etc.).
@@ -535,7 +553,7 @@
   background: var(--section-accent-tint, #faf9f6);
   padding: 0.7rem 0.95rem 0.7rem 1.35rem;
   font-family: var(--font-geist-sans), sans-serif;
-  color: var(--creed-text-primary);
+  color: var(--section-accent-bar, var(--creed-text-primary));
 }
 
 .ProseMirror .creed-callout::before {

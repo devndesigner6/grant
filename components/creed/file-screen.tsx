@@ -3700,6 +3700,12 @@ function SectionCard({
         <div
           onClick={(event) => {
             if (
+              !(event.target instanceof Node) ||
+              !event.currentTarget.contains(event.target)
+            ) {
+              return;
+            }
+            if (
               event.target instanceof Element &&
               event.target.closest(
                 "button, a, input, textarea, select, [role='button'], [contenteditable='true']",

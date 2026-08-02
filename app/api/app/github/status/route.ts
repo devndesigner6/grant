@@ -113,7 +113,10 @@ export async function GET(request: Request) {
 
     return NextResponse.json(payload);
   } catch (error) {
-    const message = "Could not load GitHub status.";
+    const message =
+      error instanceof Error && error.message && error.message !== "Unauthorized"
+        ? error.message
+        : "Could not load GitHub status.";
     return NextResponse.json(
       { error: message },
       { status: error instanceof Error && error.message === "Unauthorized" ? 401 : 400 }

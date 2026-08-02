@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
 import test from "node:test";
+import {
+  readSessionExpiresAt,
+  sessionNeedsRefresh,
+  SESSION_REFRESH_WINDOW_SECONDS,
+} from "../lib/supabase/session-freshness.ts";
 
 function source(path: string) {
   return readFileSync(new URL(path, import.meta.url), "utf8");
@@ -44,4 +49,29 @@ test("public polling and media costs stay bounded", () => {
   for (const name of ["elon", "jason", "marc", "steve", "travis"]) {
     assert.ok(statSync(new URL(`../public/assets/eggs/${name}.jpg`, import.meta.url)).size < 30_000);
   }
+});
+
+test("the proxy refreshes sessions only near expiry", () => {
+  const encode = (session: object) =>
+    `base64-${Buffer.from(JSON.stringify(session)).toString("base64url")}`;
+  const now = 1_700_000_000;
+  const fresh = [
+    { name: "sb-grant-auth-token", value: encode({ expires_at: now + 3_000 }) },
+  ];
+  const nearExpiry = [
+    {
+      name: "sb-grant-auth-token",
+      value: encode({ expires_at: now + SESSION_REFRESH_WINDOW_SECONDS - 1 }),
+    },
+  ];
+
+  assert.equal(readSessionExpiresAt(fresh), now + 3_000);
+  assert.equal(sessionNeedsRefresh(fresh, now), false);
+  assert.equal(sessionNeedsRefresh(nearExpiry, now), true);
+  assert.equal(sessionNeedsRefresh([], now), true);
+
+  const proxy = source("../proxy.ts");
+  const config = source("../next.config.ts");
+  assert.match(proxy, /sessionNeedsRefresh\(request\.cookies\.getAll\(\)\)/);
+  assert.match(config, /staleTimes/);
 });

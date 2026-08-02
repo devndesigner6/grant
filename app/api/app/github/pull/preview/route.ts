@@ -64,9 +64,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(payload);
   } catch (error) {
-    const message = error instanceof Error && error.message.includes("company workspaces")
-      ? error.message
-      : "Could not preview the Grant profile import.";
+    const message =
+      error instanceof Error && error.message && error.message !== "Unauthorized"
+        ? error.message
+        : "Could not preview the Grant profile import.";
     return NextResponse.json(
       { error: message },
       { status: error instanceof Error && error.message === "Unauthorized" ? 401 : error instanceof Error && error.message.includes("Grant profile file") ? 404 : error instanceof Error && error.message.includes("company workspaces") ? 409 : 400 }
