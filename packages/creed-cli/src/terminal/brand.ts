@@ -4,7 +4,7 @@ const BLUE_FOREGROUND = "\u001b[38;2;37;99;235m";
 const BLUE_BACKGROUND = "\u001b[48;2;37;99;235m";
 const RESET = "\u001b[0m";
 
-// Hand-traced from the canonical 157 x 244 Creed SVG. The 18 x 14 grid
+// Hand-traced from the canonical Grant SVG. The 18 x 14 grid
 // compensates for tall terminal cells while retaining the mark's perspective.
 const MARK = [
   "  ##############  ",
@@ -53,7 +53,7 @@ function renderPlainRow(row: string): string {
 
 export function renderBrand(columns = process.stdout.columns ?? 80): string {
   const color = supportsColor();
-  if (columns < 44) return `${color ? BLUE_FOREGROUND : ""}Creed${color ? RESET : ""} ${CLI_VERSION}`;
+  if (columns < 44) return `${color ? BLUE_FOREGROUND : ""}Grant${color ? RESET : ""} ${CLI_VERSION}`;
 
   const labelLine = MARK.length - 2;
 
@@ -62,7 +62,7 @@ export function renderBrand(columns = process.stdout.columns ?? 80): string {
       const renderedMark = color ? renderColorRow(row) : renderPlainRow(row);
       if (index !== labelLine) return renderedMark;
 
-      const label = `Creed ${CLI_VERSION}`;
+      const label = `Grant ${CLI_VERSION}`;
       return `${renderedMark}     ${color ? BLUE_FOREGROUND : ""}${label}${color ? RESET : ""}`;
     })
     .join("\n");

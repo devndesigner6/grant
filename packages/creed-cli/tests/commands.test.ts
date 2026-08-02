@@ -12,7 +12,7 @@ test("help and version do not depend on server configuration", async () => {
   const help = await execFileAsync(process.execPath, [binPath, "--help"], { env });
   const version = await execFileAsync(process.execPath, [binPath, "--version"], { env });
 
-  assert.match(help.stdout, /^Usage: creed/);
+  assert.match(help.stdout, /^Usage: grant/);
   assert.match(version.stdout, /^\d+\.\d+\.\d+\n$/);
 });
 
@@ -24,7 +24,7 @@ test("invalid command shapes fail before attempting OAuth", async () => {
     (error: unknown) => {
       const failure = error as { code?: number; stderr?: string };
       assert.equal(failure.code, 2);
-      assert.match(failure.stderr ?? "", /Usage: creed call <tool>/);
+      assert.match(failure.stderr ?? "", /Usage: grant call <tool>/);
       return true;
     },
   );

@@ -3,13 +3,13 @@ import { createHash } from "node:crypto";
 import { decryptWithSecrets, encryptWithSecret } from "@/lib/secret-crypto-core";
 
 function getEncryptionSecrets() {
-  const secret = process.env.CREED_ENCRYPTION_SECRET;
+  const secret = process.env.GRANT_ENCRYPTION_SECRET;
 
   if (!secret) {
-    throw new Error("CREED_ENCRYPTION_SECRET is not configured.");
+    throw new Error("GRANT_ENCRYPTION_SECRET is not configured.");
   }
 
-  return [secret, process.env.CREED_ENCRYPTION_SECRET_PREVIOUS].filter(
+  return [secret, process.env.GRANT_ENCRYPTION_SECRET_PREVIOUS].filter(
     (value): value is string => Boolean(value)
   );
 }

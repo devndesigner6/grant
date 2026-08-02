@@ -35,5 +35,5 @@ test("requires HTTPS except on explicit loopback servers", () => {
   assert.equal(validateServerUrl("http://127.0.0.1:3000/mcp"), "http://127.0.0.1:3000/mcp");
   assert.equal(validateServerUrl("http://[::1]:3000/mcp"), "http://[::1]:3000/mcp");
   assert.throws(() => validateServerUrl("http://example.com/mcp"), /requires HTTPS/);
-  assert.throws(() => validateServerUrl("not a URL"), /Invalid Creed MCP URL/);
+  assert.throws(() => validateServerUrl("not a URL"), /Invalid Grant MCP URL/);
 });

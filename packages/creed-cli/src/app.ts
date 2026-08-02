@@ -17,7 +17,7 @@ async function readStdin(): Promise<string> {
 }
 
 function usage(): string {
-  return `Usage: creed [--agent ID] [command]\n\nCommands:\n  login                  Connect through Creed OAuth\n  logout                 Revoke and remove this connection\n  status                  Show local connection status\n  doctor                  Verify OAuth, MCP, tools, resources, and prompts\n  tools [--json]          List live MCP tools\n  call <tool> [options]   Call an exact MCP tool name\n  resources [--json]      List live MCP resources\n  resource <uri>          Read a resource\n  prompts [--json]        List live MCP prompts\n  prompt <name>           Get a prompt\n  config set server URL   Save a hosted or self-hosted MCP URL\n\nPass --agent ID when an agent invokes the CLI so Creed can attribute usage.\nRun creed with no command for the interactive terminal.\n`;
+  return `Usage: grant [--agent ID] [command]\n\nCommands:\n  login                  Connect through Grant OAuth\n  logout                 Revoke and remove this connection\n  status                  Show local connection status\n  doctor                  Verify OAuth, MCP, tools, resources, and prompts\n  tools [--json]          List live MCP tools\n  call <tool> [options]   Call an exact MCP tool name\n  resources [--json]      List live MCP resources\n  resource <uri>          Read a resource\n  prompts [--json]        List live MCP prompts\n  prompt <name>           Get a prompt\n  config set server URL   Save a hosted or self-hosted MCP URL\n\nPass --agent ID when an agent invokes the CLI so Grant can attribute usage.\nRun grant with no command for the interactive terminal.\n`;
 }
 
 function assertArgumentCount(
@@ -64,7 +64,7 @@ export async function run(argv: string[]): Promise<void> {
     return;
   }
   if (command === "config") {
-    if (args.length !== 4 || args[1] !== "set" || args[2] !== "server" || !args[3]) throw new CliError("Usage: creed config set server <URL>", 2);
+    if (args.length !== 4 || args[1] !== "set" || args[2] !== "server" || !args[3]) throw new CliError("Usage: grant config set server <URL>", 2);
     const url = validateServerUrl(args[3]);
     await saveServer(url);
     process.stdout.write(`Saved ${url}\n`);
@@ -72,17 +72,17 @@ export async function run(argv: string[]): Promise<void> {
   }
 
   if (command === "call" && !args[1]) {
-    throw new CliError("Usage: creed call <tool> [options]", 2);
+    throw new CliError("Usage: grant call <tool> [options]", 2);
   }
   if (command === "resource") {
     assertArgumentCount(args, 2, "Usage: creed resource <uri>");
   }
   const promptArgs = command === "prompt" ? parsePromptArguments(args) : undefined;
   if (["login", "logout", "status", "doctor", "tools", "resources", "prompts"].includes(command ?? "")) {
-    assertArgumentCount(args, 1, `Usage: creed ${command}`);
+    assertArgumentCount(args, 1, `Usage: grant ${command}`);
   }
 
-  const configuredServer = server ?? process.env.CREED_MCP_URL ?? await loadSavedServer() ?? DEFAULT_SERVER_URL;
+  const configuredServer = server ?? process.env.GRANT_MCP_URL ?? await loadSavedServer() ?? DEFAULT_SERVER_URL;
   const serverUrl = validateServerUrl(configuredServer);
   if (command === "status") {
     const credential = await loadCredential(serverUrl);
@@ -99,14 +99,14 @@ export async function run(argv: string[]): Promise<void> {
     } catch { revoked = false; }
     await removeCredential(serverUrl);
     if (json) writeJson({ ok: true, revoked, localCredentialsRemoved: true });
-    else process.stdout.write(revoked ? "Disconnected Creed CLI.\n" : "Removed local credentials. Remote revocation could not be confirmed.\n");
+    else process.stdout.write(revoked ? "Disconnected Grant CLI.\n" : "Removed local credentials. Remote revocation could not be confirmed.\n");
     return;
   }
 
   const connection = await connectCreed(serverUrl, quiet, agent);
   try {
     if (command === "login") {
-      if (json) writeJson({ ok: true, server: serverUrl }); else process.stdout.write("Creed CLI is connected.\n");
+      if (json) writeJson({ ok: true, server: serverUrl }); else process.stdout.write("Grant CLI is connected.\n");
       return;
     }
     if (command === "tools") {
@@ -137,7 +137,7 @@ export async function run(argv: string[]): Promise<void> {
     if (command === "doctor") {
       const [tools, resources, prompts] = await Promise.all([listAllTools(connection.client), listAllResources(connection.client), listAllPrompts(connection.client)]);
       const value = { ok: true, server: serverUrl, serverInfo: connection.client.getServerVersion(), protocolInstructions: Boolean(connection.client.getInstructions()), tools: tools.length, resources: resources.length, prompts: prompts.length };
-      if (json) writeJson(value); else process.stdout.write(`Connected to ${value.serverInfo?.name ?? "Creed"}.\nTools: ${tools.length}\nResources: ${resources.length}\nPrompts: ${prompts.length}\n`);
+      if (json) writeJson(value); else process.stdout.write(`Connected to ${value.serverInfo?.name ?? "Grant"}.\nTools: ${tools.length}\nResources: ${resources.length}\nPrompts: ${prompts.length}\n`);
       return;
     }
 
@@ -145,7 +145,7 @@ export async function run(argv: string[]): Promise<void> {
     const toolName = command === "call" ? args[1] : command;
     if (toolName) {
       const tool = tools.find((entry) => entry.name === toolName);
-      if (!tool) throw new CliError(`Unknown command or MCP tool: ${toolName}. Run \`creed tools\` to list live tools.`, 2);
+      if (!tool) throw new CliError(`Unknown command or MCP tool: ${toolName}. Run \`grant tools\` to list live tools.`, 2);
       const offset = command === "call" ? 2 : 1;
       let toolTokens = args.slice(offset);
       if (!process.stdin.isTTY && !toolTokens.includes("--args") && !toolTokens.includes("--file")) {
@@ -155,10 +155,10 @@ export async function run(argv: string[]): Promise<void> {
       const toolArgs = await parseToolArguments(toolTokens, tool.inputSchema);
       const result = await connection.client.callTool({ name: tool.name, arguments: toolArgs });
       printToolResult(result, json);
-      if (result.isError) throw new CliError("The Creed tool returned an error.", 3);
+      if (result.isError) throw new CliError("The Grant tool returned an error.", 3);
       return;
     }
-    if (!process.stdin.isTTY || !process.stdout.isTTY) throw new CliError("Interactive mode requires a terminal. Use `creed --help` for scriptable commands.", 2);
+    if (!process.stdin.isTTY || !process.stdout.isTTY) throw new CliError("Interactive mode requires a terminal. Use `grant --help` for scriptable commands.", 2);
     await runInteractive(connection.client, tools);
   } finally {
     await connection.close();

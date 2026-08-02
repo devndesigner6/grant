@@ -1,12 +1,11 @@
 {
-  "name": "creed-cli",
+  "name": "@devndesigner/grant-cli",
   "version": "0.2.2",
-  "description": "The first-party terminal client for Creed.",
+  "description": "The first-party terminal client for Grant.",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "creed": "dist/src/bin.js",
-    "creed-cli": "dist/src/bin.js"
+    "grant": "dist/src/bin.js"
   },
   "files": [
     "dist/src",
@@ -16,7 +15,6 @@
   "engines": {
     "node": ">=20"
   },
-  "author": "Connor Hepburn",
   "publishConfig": {
     "access": "public"
   },
@@ -37,7 +35,7 @@
     "typescript": "^5.9.3"
   },
   "keywords": [
-    "creed",
+    "grant",
     "mcp",
     "cli",
     "context",
@@ -45,9 +43,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/connorhpbrn/creed.git",
+    "url": "git+https://github.com/devndesigner6/grant.git",
     "directory": "packages/creed-cli"
   },
-  "homepage": "https://creed.md",
-  "bugs": "https://github.com/connorhpbrn/creed/issues"
+  "homepage": "https://github.com/devndesigner6/grant",
+  "bugs": "https://github.com/devndesigner6/grant/issues"
 }

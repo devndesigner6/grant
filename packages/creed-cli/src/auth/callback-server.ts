@@ -10,7 +10,7 @@ export type CallbackServer = {
   close(): Promise<void>;
 };
 
-const successPage = `<!doctype html><html><head><meta charset="utf-8"><title>Creed connected</title></head><body style="font-family:system-ui;background:#f7f8fa;color:#111;padding:48px"><h1>Creed CLI connected</h1><p>You can close this window and return to your terminal.</p></body></html>`;
+const successPage = `<!doctype html><html><head><meta charset="utf-8"><title>Grant connected</title></head><body style="font-family:system-ui;background:#f7f8fa;color:#111;padding:48px"><h1>Grant CLI connected</h1><p>You can close this window and return to your terminal.</p></body></html>`;
 
 export async function createCallbackListener(timeoutMs = CALLBACK_TIMEOUT_MS): Promise<CallbackServer> {
   let resolveCallback: (value: OAuthCallback) => void;
@@ -37,7 +37,7 @@ export async function createCallbackListener(timeoutMs = CALLBACK_TIMEOUT_MS): P
     const state = requestUrl.searchParams.get("state") ?? undefined;
     settled = true;
     if (error) {
-      response.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" }).end("Creed authorization was not completed. You can return to the terminal.");
+      response.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" }).end("Grant authorization was not completed. You can return to the terminal.");
       rejectCallback(new CliError(description || `OAuth authorization failed: ${error}`));
       return;
     }

@@ -1,26 +1,26 @@
-# Creed CLI
+# Grant CLI
 
-The first-party terminal client for [Creed](https://creed.md). It connects to
+The first-party terminal client for Grant. It connects to
 the same OAuth-protected MCP server as Claude, Codex, ChatGPT, Cursor, and every
-other Creed integration.
+other Grant integration.
 
 The CLI discovers tools, resources, and prompts from the live MCP server. New
-Creed tools therefore appear automatically without a matching CLI release.
+Grant tools therefore appear automatically without a matching CLI release.
 
 ## Install
 
 ```bash
-npm install --global creed-cli
-creed
+npm install --global @devndesigner/grant-cli
+grant
 ```
 
 You can also run it without installing:
 
 ```bash
-npx creed-cli
+npx @devndesigner/grant-cli
 ```
 
-The first run opens Creed's OAuth screen in your browser. Click Allow and return
+The first run opens Grant's OAuth screen in your browser. Click Allow and return
 to the terminal.
 
 ## Interactive terminal

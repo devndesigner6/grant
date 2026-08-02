@@ -15,12 +15,12 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // CORS: this endpoint is intentionally public and contains no user data,
-// only aggregated component health. Allowing any origin lets status.creed.md
+// only aggregated component health. Allowing any origin lets an external status
 // (or any external dashboard) fetch it from the browser without a proxy.
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, X-Creed-Health-Secret",
+  "Access-Control-Allow-Headers": "Content-Type, X-Grant-Health-Secret",
 } as const;
 
 const NO_STORE_HEADERS = {
@@ -68,8 +68,8 @@ async function limited(request: Request) {
 }
 
 function mayReadDetails(request: Request) {
-  const expected = process.env.CREED_HEALTH_SECRET;
-  const received = request.headers.get("x-creed-health-secret");
+  const expected = process.env.GRANT_HEALTH_SECRET;
+  const received = request.headers.get("x-grant-health-secret");
   if (!expected || !received) return false;
   const left = Buffer.from(expected);
   const right = Buffer.from(received);

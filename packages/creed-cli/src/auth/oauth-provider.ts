@@ -54,7 +54,7 @@ export class CreedOAuthProvider implements OAuthClientProvider {
   }
 
   async redirectToAuthorization(authorizationUrl: URL): Promise<void> {
-    if (!this.quiet) process.stderr.write(`Authorize Creed CLI in your browser:\n${authorizationUrl.toString()}\n`);
+    if (!this.quiet) process.stderr.write(`Authorize Grant CLI in your browser:\n${authorizationUrl.toString()}\n`);
     try {
       await open(authorizationUrl.toString(), { wait: false });
     } catch {

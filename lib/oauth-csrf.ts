@@ -5,8 +5,8 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 const MAX_AGE_SECONDS = 10 * 60;
 
 function signingSecret() {
-  const secret = process.env.CREED_CSRF_SECRET?.trim() ?? process.env.CREED_ENCRYPTION_SECRET?.trim();
-  if (!secret) throw new Error("CREED_CSRF_SECRET or CREED_ENCRYPTION_SECRET is required.");
+  const secret = process.env.GRANT_CSRF_SECRET?.trim() ?? process.env.GRANT_ENCRYPTION_SECRET?.trim();
+  if (!secret) throw new Error("GRANT_CSRF_SECRET or GRANT_ENCRYPTION_SECRET is required.");
   return secret;
 }
 

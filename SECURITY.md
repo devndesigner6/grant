@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-If you believe you've found a security issue in Creed, please report it
+If you believe you've found a security issue in Grant, please report it
 privately. **Do not open a public GitHub issue** for vulnerabilities.
 
 Email the contact address listed in `NEXT_PUBLIC_CONTACT_EMAIL` (the same
@@ -18,7 +18,7 @@ fix and on a sensible disclosure timeline.
 
 ## Scope
 
-Creed is a small, open-source codebase. The pieces most worth scrutinising:
+Grant is a small, open-source codebase. The pieces most worth scrutinising:
 
 - **`/api/creed/*` and `/mcp` routes** — these are the agent-facing
   endpoints. They authenticate by bearer token (read / proposal /
@@ -29,7 +29,7 @@ Creed is a small, open-source codebase. The pieces most worth scrutinising:
   Anything that bypasses `requireApiAuth` is in scope.
 - **Token storage** — read / proposal / direct-edit tokens are hashed
   before being stored (`lib/secret-crypto.ts`). The raw tokens are
-  AES-256-GCM-encrypted with `CREED_ENCRYPTION_SECRET` so they can
+  AES-256-GCM-encrypted with `GRANT_ENCRYPTION_SECRET` so they can
   be recovered for the owner. Anything that exposes the plaintext token
   to another user, or weakens the hash compare, is in scope.
 - **Prompt injection through agent-supplied text** — the AI synthesizer
@@ -42,20 +42,20 @@ Creed is a small, open-source codebase. The pieces most worth scrutinising:
   that lets one signed-in user read or write another user's rows is in
   scope.
 
-Out of scope: third-party services Creed integrates with (Supabase,
+Out of scope: third-party services Grant integrates with (Supabase,
 OpenRouter, GitHub OAuth) — report those upstream. Issues that require
 the user to install a malicious browser extension or hand over their
 API keys are also out of scope.
 
 ## Hardening notes for self-hosters
 
-If you fork Creed and run your own instance, please:
+If you fork Grant and run your own instance, please:
 
-1. Generate a fresh `CREED_ENCRYPTION_SECRET` (32 random bytes,
+1. Generate a fresh `GRANT_ENCRYPTION_SECRET` (32 random bytes,
    base64-encoded). Do not reuse the upstream value.
    To rotate it without invalidating stored provider tokens, move the current
-   value to `CREED_ENCRYPTION_SECRET_PREVIOUS`, install the new value as
-   `CREED_ENCRYPTION_SECRET`, deploy, then remove the previous value after all
+   value to `GRANT_ENCRYPTION_SECRET_PREVIOUS`, install the new value as
+   `GRANT_ENCRYPTION_SECRET`, deploy, then remove the previous value after all
    stored credentials have been refreshed. Versioned ciphertext is written
    with the current key while legacy ciphertext remains readable during the
    transition.

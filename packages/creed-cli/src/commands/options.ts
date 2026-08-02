@@ -67,7 +67,7 @@ export function parseGlobalOptions(argv: string[]): GlobalOptions {
     !(ATTRIBUTABLE_AGENT_IDS as readonly string[]).includes(agent)
   ) {
     throw new CliError(
-      `Unsupported --agent ID: ${agent}. Copy the exact command from creed.md/connections.`,
+      `Unsupported --agent ID: ${agent}. Copy the exact command from Grant Connections.`,
       2,
     );
   }
@@ -86,14 +86,14 @@ export function validateServerUrl(value: string): string {
   try {
     url = new URL(value);
   } catch {
-    throw new CliError(`Invalid Creed MCP URL: ${value}`, 2);
+    throw new CliError(`Invalid Grant MCP URL: ${value}`, 2);
   }
   const isLoopback = ["localhost", "127.0.0.1", "[::1]"].includes(
     url.hostname,
   );
   if (url.protocol !== "https:" && !(url.protocol === "http:" && isLoopback)) {
     throw new CliError(
-      "Creed requires HTTPS, except for an explicit localhost server.",
+      "Grant requires HTTPS, except for an explicit localhost server.",
       2,
     );
   }
