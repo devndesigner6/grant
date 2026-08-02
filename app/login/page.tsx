@@ -6,8 +6,8 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Sign in | Creed",
-  description: "Sign in to your Creed.",
+  title: "Sign in | Grant",
+  description: "Sign in to your Grant profile.",
 };
 
 export default async function LoginPage({

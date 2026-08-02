@@ -189,7 +189,7 @@ export function CreedBenchChart() {
             Personal context use by cost
           </h2>
           <p className="mt-1 text-[13px] text-[var(--creed-text-secondary)]">
-            Pass@1 vs average cost per task · Creed Bench v{benchmarkVersion}
+            Pass@1 vs average cost per task · Grant Bench v{benchmarkVersion}
           </p>
         </div>
         <div className="flex flex-wrap items-center justify-start gap-x-4 gap-y-2 sm:justify-end">

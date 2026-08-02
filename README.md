@@ -54,7 +54,7 @@ app/                    Next.js routes, OAuth, MCP, and authenticated APIs
 components/             Product, auth, marketing, and UI components
 lib/                    Supabase, AI, MCP, security, and GitHub integration
 supabase/migrations/    Immutable forward-only schema history
-packages/creed-cli/     Compatibility-sensitive CLI source
+packages/creed-cli/     Compatibility-sensitive Grant CLI source
 tests/                  node:test suites
 ```
 

@@ -86,7 +86,7 @@ const PERSONAL_SLIDES: Slide[] = [
   {
     key: "file",
     icon: FileText,
-    title: "Your Creed is live",
+    title: "Your Grant profile is live",
     body: "Read it top to bottom, fix what the setup got wrong, and flesh out any thin sections.",
     hasVideo: true,
   },
@@ -94,7 +94,7 @@ const PERSONAL_SLIDES: Slide[] = [
     key: "connect",
     icon: Plug,
     title: "Connect your agents",
-    body: "Paste your MCP URL into any agent. They read your Creed and propose edits you approve.",
+    body: "Paste your MCP URL into any agent. They read your Grant profile and propose edits you approve.",
     hasVideo: true,
   },
   {
@@ -108,14 +108,14 @@ const PERSONAL_SLIDES: Slide[] = [
     key: "panel",
     icon: Command,
     title: "Press K for anything",
-    body: "Search your Creed, ask a question, or run the agent from anywhere. Tab switches modes.",
+    body: "Search your Grant profile, ask a question, or run the agent from anywhere. Tab switches modes.",
     hasVideo: true,
   },
   {
     key: "tab",
     icon: TextCursorInput,
     title: "Tab finishes the thought",
-    body: "Press Tab in any section and it completes the line in your voice, drawn from your whole Creed.",
+    body: "Press Tab in any section and it completes the line in your voice, drawn from your whole Grant profile.",
     hasVideo: true,
   },
   {
@@ -123,7 +123,7 @@ const PERSONAL_SLIDES: Slide[] = [
     title: "Join the Discord",
     body: DISCORD_URL ? (
       <>
-        We are building Creed out in the open forever.{" "}
+        Grant is developed in the open.{" "}
         <a
           href={DISCORD_URL}
           target="_blank"
@@ -135,7 +135,7 @@ const PERSONAL_SLIDES: Slide[] = [
         to shape what ships next.
       </>
     ) : (
-      "We are building Creed out in the open forever. Come shape what ships next."
+      "Grant is developed in the open. Come shape what ships next."
     ),
     hasVideo: true,
   },
@@ -530,7 +530,7 @@ export function WelcomeDialog({
           }
         }}
       >
-        <DialogTitle className="sr-only">Welcome to Creed</DialogTitle>
+        <DialogTitle className="sr-only">Welcome to Grant</DialogTitle>
 
         {/* Stage: grid so both slides share one cell during the crossfade and
             the dialog height simply follows the content (no dead space). */}

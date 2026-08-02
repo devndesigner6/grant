@@ -747,7 +747,7 @@ function buildConnectionDefinitions() {
   // from lib/connection-actions.ts instead; these definitions carry identity,
   // status, and fallback copy only.
   const remoteHint =
-    "Add a custom MCP server pointing at the URL above, then authorize Creed in the browser window your client opens.";
+    "Add a custom MCP server pointing at the URL above, then authorize Grant in the browser window your client opens.";
 
   return {
     definitions: [
@@ -756,7 +756,7 @@ function buildConnectionDefinitions() {
         name: "ChatGPT",
         icon: "chatgpt",
         description:
-          "Add Creed as a connector so ChatGPT starts from your context.",
+          "Add Grant as a connector so ChatGPT starts from your context.",
         connectHint:
           "In ChatGPT, open Settings > Apps & Connectors, turn on Developer mode, then Create a connector with the URL.",
       },
@@ -764,7 +764,7 @@ function buildConnectionDefinitions() {
         id: "claude",
         name: "Claude",
         icon: "claude",
-        description: "Connect Creed as a custom connector in Claude.",
+        description: "Connect Grant as a custom connector in Claude.",
         connectHint:
           "In Claude, open Settings > Connectors > Add custom connector, paste the URL above, then Connect to authorize in the browser.",
       },
@@ -773,7 +773,7 @@ function buildConnectionDefinitions() {
         name: "Codex",
         icon: "codex",
         description:
-          "Add Creed as a remote MCP server for agentic coding runs.",
+          "Add Grant as a remote MCP server for agentic coding runs.",
         connectHint:
           "Run the command below, then codex mcp login creed to authorize in the browser.",
       },
@@ -782,7 +782,7 @@ function buildConnectionDefinitions() {
         name: "Claude Code",
         icon: "claudecode",
         description:
-          "Connect Creed so every Claude Code session starts with your context.",
+          "Connect Grant so every Claude Code session starts with your context.",
         connectHint:
           "Run the command below (user scope, so every project gets it), then /mcp to authorize in the browser.",
       },
@@ -790,21 +790,21 @@ function buildConnectionDefinitions() {
         id: "openclaw",
         name: "OpenClaw",
         icon: "openclaw",
-        description: "Add Creed to OpenClaw as a remote MCP server.",
+        description: "Add Grant to OpenClaw as a remote MCP server.",
         connectHint: remoteHint,
       },
       {
         id: "hermes",
         name: "Hermes",
         icon: "hermes",
-        description: "Add Creed to Hermes as a remote MCP server.",
+        description: "Add Grant to Hermes as a remote MCP server.",
         connectHint: remoteHint,
       },
       {
         id: "manus",
         name: "Manus",
         icon: "manus",
-        description: "Add Creed to Manus as a remote MCP server.",
+        description: "Add Grant to Manus as a remote MCP server.",
         connectHint:
           "In Manus, open Settings > Connectors > Add custom MCP, enter the URL above with transport HTTP, then authorize.",
       },
@@ -812,7 +812,7 @@ function buildConnectionDefinitions() {
         id: "grok",
         name: "Grok",
         icon: "grok",
-        description: "Add Creed to Grok as a custom connector.",
+        description: "Add Grant to Grok as a custom connector.",
         connectHint:
           "In Grok, go to grok.com/connectors, create a New Connector > Custom, paste the URL above, and authorize.",
       },
@@ -820,7 +820,7 @@ function buildConnectionDefinitions() {
         id: "opencode",
         name: "OpenCode",
         icon: "opencode",
-        description: "Add Creed to OpenCode as a remote MCP server.",
+        description: "Add Grant to OpenCode as a remote MCP server.",
         connectHint:
           "Add the JSON below to opencode.json, then run opencode mcp auth creed to authorize in the browser.",
       },
@@ -828,15 +828,15 @@ function buildConnectionDefinitions() {
         id: "cursor",
         name: "Cursor",
         icon: "cursor",
-        description: "One-click install Creed into Cursor, then authorize.",
+        description: "One-click install Grant into Cursor, then authorize.",
         connectHint:
-          "Use the one-click button to add Creed to Cursor as a remote MCP server, then authorize Creed in the browser window Cursor opens.",
+          "Use the one-click button to add Grant to Cursor as a remote MCP server, then authorize Grant in the browser window Cursor opens.",
       },
       {
         id: "devin",
         name: "Devin",
         icon: "devin",
-        description: "Add Creed to Devin from the MCP Marketplace.",
+        description: "Add Grant to Devin from the MCP Marketplace.",
         connectHint:
           "In Devin, open Settings > Connections > MCP servers, add a custom MCP with the URL above then transport HTTP and OAuth.",
       },
@@ -844,23 +844,23 @@ function buildConnectionDefinitions() {
         id: "replit",
         name: "Replit",
         icon: "replit",
-        description: "Add Creed to Replit as a remote MCP server.",
+        description: "Add Grant to Replit as a remote MCP server.",
         connectHint:
-          "In Replit, open the Agent's Integrations pane, add a custom MCP server with the URL above, and authorize Creed with OAuth.",
+          "In Replit, open the Agent's Integrations pane, add a custom MCP server with the URL above, and authorize Grant with OAuth.",
       },
       {
         id: "whirl",
         name: "Whirl",
         icon: "whirl",
-        description: "Add Creed to Whirl as a custom MCP connection.",
+        description: "Add Grant to Whirl as a custom MCP connection.",
         connectHint:
-          "In Whirl, open Settings and add a custom MCP server with the URL above, then authorize Creed with OAuth.",
+          "In Whirl, open Settings and add a custom MCP server with the URL above, then authorize Grant with OAuth.",
       },
       {
         id: "factory",
         name: "Factory",
         icon: "factory",
-        description: "Add Creed to Factory's droid as a remote MCP server.",
+        description: "Add Grant to Factory's droid as a remote MCP server.",
         connectHint:
           "Run the command below, then /mcp inside droid to authorize in the browser.",
       },
@@ -868,7 +868,7 @@ function buildConnectionDefinitions() {
         id: "v0",
         name: "v0",
         icon: "v0",
-        description: "Add Creed to v0 as a custom MCP connection.",
+        description: "Add Grant to v0 as a custom MCP connection.",
         connectHint:
           "In v0, open MCP Connections (or Add MCP in the prompt bar), add a custom server with the URL above, and choose OAuth.",
       },

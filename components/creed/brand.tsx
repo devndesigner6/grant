@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 const allAgentsIcon = "/assets/agents/all.svg";
 const mcpIcon = "/assets/agents/mcp.svg";
 const cliIcon = "/assets/agents/cli.svg";
-const brandmark = "/assets/brand/brandmark.svg";
 const chatgptIcon = "/assets/agents/chatgpt.svg";
 const claudeIcon = "/assets/agents/claude.svg";
 const claudeCodeIcon = "/assets/agents/claudecode.svg";
@@ -34,17 +33,15 @@ export function CreedWordmark({
 }) {
   return (
     <div className={cn("ml-1 h-[18px] shrink-0", className)}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={brandmark}
-        alt="Creed"
-        width={80}
-        height={18}
-        decoding="async"
-        style={{ shapeRendering: "geometricPrecision" }}
-        className={cn("creed-invert-on-dark block h-full w-auto select-none", imageClassName)}
-        draggable={false}
-      />
+      <span
+        aria-label="Grant"
+        className={cn(
+          "block h-full select-none font-medium leading-[18px] tracking-[-0.04em] text-[18px] text-current",
+          imageClassName,
+        )}
+      >
+        Grant
+      </span>
     </div>
   );
 }
@@ -55,7 +52,7 @@ export function CreedMark({ className }: { className?: string }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={logo}
-        alt="Creed"
+        alt="Grant"
         width={18}
         height={18}
         decoding="async"
@@ -74,7 +71,7 @@ export function CreedAgentGlyph({ className }: { className?: string }) {
   return (
     <span
       role="img"
-      aria-label="Creed"
+      aria-label="Grant"
       className={cn("block shrink-0", className)}
       style={{
         backgroundColor: "var(--creed-accent)",

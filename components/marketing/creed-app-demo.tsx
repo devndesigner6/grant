@@ -1,6 +1,6 @@
 "use client";
 
-// An interactive, miniature replica of the Creed `/file` editor for the
+// An interactive, miniature replica of the Grant `/file` editor for the
 // landing page, framed in a realistic browser window and floating on the blue
 // overview gradient. It runs on client-only mock state but is built from the
 // ACTUAL app components (Button, ReviewPill, InlineProposalDiff, the quality
@@ -120,7 +120,7 @@ function BrowserChrome() {
 
       <div className="absolute left-1/2 top-1/2 flex h-7 w-[min(440px,52%)] -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-[8px] bg-[var(--creed-surface)] px-3 text-[13px] text-[var(--creed-text-secondary)]">
         <Lock className="h-3 w-3 shrink-0 opacity-60" />
-        <span className="flex-1 text-center">creed.md</span>
+        <span className="flex-1 text-center">Grant</span>
         <RotateCw className="h-3 w-3 shrink-0 opacity-60" />
       </div>
 
@@ -458,7 +458,7 @@ function ActivityDrawer({ activity, onClose }: { activity: DemoActivity[]; onClo
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="text-[15px] font-medium text-[var(--creed-text-primary)]">Activity</div>
-            <div className="mt-1 text-[12px] text-[var(--creed-text-tertiary)]">Agent changes to this Creed.</div>
+            <div className="mt-1 text-[12px] text-[var(--creed-text-tertiary)]">Agent changes to this Grant profile.</div>
           </div>
           <Button variant="ghost" size="icon-sm" aria-label="Close activity" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -708,7 +708,7 @@ export function CreedAppDemo() {
               >
                 <FileStickyHeaderRow compact>
                   <div>
-                    <div className="whitespace-nowrap text-[18px] font-medium tracking-[-0.02em] text-[var(--creed-text-primary)] md:text-[20px]">{profile.name} / Creed</div>
+                    <div className="whitespace-nowrap text-[18px] font-medium tracking-[-0.02em] text-[var(--creed-text-primary)] md:text-[20px]">{profile.name} / Grant</div>
                     <div className="mt-2 flex items-center gap-2 text-sm text-[var(--creed-text-secondary)]">
                       <ClockIcon size={14} className="h-3.5 w-3.5 shrink-0" />
                       {saving ? "Saving…" : "Saved just now"}
@@ -725,7 +725,7 @@ export function CreedAppDemo() {
                       <button
                         type="button"
                         className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[var(--creed-text-primary)] transition-colors duration-150 hover:bg-[var(--creed-surface-raised)] data-[state=open]:bg-[var(--creed-surface-raised)]"
-                        aria-label="Run Creed quality analysis"
+                        aria-label="Run Grant quality analysis"
                       >
                         <QualityRing
                           score={quality.overall.score}

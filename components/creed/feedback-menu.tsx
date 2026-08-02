@@ -215,12 +215,14 @@ export function FeedbackMenuItem() {
                     className="text-[12px] text-[var(--creed-text-tertiary)]"
                   >
                     Need help?{" "}
-                    <a
-                      href={CONTACT_MAILTO}
-                      className="font-medium text-[var(--creed-accent)] transition-colors hover:text-[var(--creed-accent-hover)]"
-                    >
-                      Contact us
-                    </a>
+                    {CONTACT_MAILTO ? (
+                      <a
+                        href={CONTACT_MAILTO}
+                        className="font-medium text-[var(--creed-accent)] transition-colors hover:text-[var(--creed-accent-hover)]"
+                      >
+                        Contact us
+                      </a>
+                    ) : null}
                     {isMobile ? null : (
                       <>
                         {" "}

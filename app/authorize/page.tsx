@@ -66,7 +66,7 @@ export default async function AuthorizePage({
       <Shell>
         <Message
           title="Connection unavailable"
-          body="Creed is not fully configured on this deployment. Try again later."
+          body="Grant is not fully configured on this deployment. Try again later."
         />
       </Shell>
     );
@@ -131,7 +131,7 @@ export default async function AuthorizePage({
       <Shell>
         <Message
           title="Sign in to connect"
-          body={`Sign in to your Creed account to let ${client.clientName} read and update your Creed.`}
+          body={`Sign in to your Grant account to let ${client.clientName} read and update your Grant profile.`}
         />
         <div className="mt-6 flex justify-center">
           <Link
@@ -189,10 +189,10 @@ export default async function AuthorizePage({
       </div>
 
       <h1 className="mt-6 text-[18px] font-medium text-[var(--creed-text-primary)]">
-        Connect {client.clientName} to your Creed
+        Connect {client.clientName} to your Grant profile
       </h1>
       <p className="mt-3 text-[14px] leading-7 text-[var(--creed-text-secondary)]">
-        {client.clientName} can read your Creed and propose updates, and edits a
+        {client.clientName} can read your Grant profile and propose updates, and edits a
         section directly only where you allow direct edits.
       </p>
       <p className="mt-2 text-[13px] text-[var(--creed-text-tertiary)]">

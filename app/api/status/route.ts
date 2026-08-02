@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const STATUS_URL = "https://status.creed.md/api/summary";
+const STATUS_URL = process.env.GRANT_STATUS_URL?.trim() || null;
 const REQUEST_TIMEOUT_MS = 8_000;
 
 type StatusColor = "green" | "yellow" | "red";
@@ -13,6 +13,13 @@ const CACHE_HEADERS = {
 } as const;
 
 export async function GET() {
+  if (!STATUS_URL) {
+    return NextResponse.json(
+      { label: "Status unavailable", color: "yellow" satisfies StatusColor },
+      { headers: CACHE_HEADERS },
+    );
+  }
+
   try {
     const response = await fetch(STATUS_URL, {
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),

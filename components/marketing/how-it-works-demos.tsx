@@ -1,6 +1,6 @@
 "use client";
 
-// Three auto-playing mini-demos for the "How Creed works" steps, reflecting the
+// Three auto-playing mini-demos for the "How Grant works" steps, reflecting the
 // current app:
 //  - CreateDemo: a mini onboarding interview that types through the starter
 //    questions, then lands on a ready state.
@@ -133,7 +133,7 @@ export function CreateDemo() {
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#ECFDF5] text-[#16A34A] dark:bg-[#052e1a]/55 dark:text-[#4ade80]">
                 <Check className="h-4 w-4" />
               </span>
-              <div className="text-[14px] font-medium text-[var(--creed-text-primary)]">Your starter Creed is ready</div>
+              <div className="text-[14px] font-medium text-[var(--creed-text-primary)]">Your starter Grant profile is ready</div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -239,7 +239,7 @@ export function ConnectDemo() {
               className="flex flex-col p-4"
             >
               <div className="text-[15px] font-medium text-[var(--creed-text-primary)]">
-                Paste your Creed
+                Paste your Grant profile
               </div>
               <div className="mt-1 text-[11px] text-[var(--creed-text-tertiary)]">
                 Paste the Markdown your assistant gave you.

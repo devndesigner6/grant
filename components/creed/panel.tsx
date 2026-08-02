@@ -127,8 +127,8 @@ const GROUP_ORDER: Command["group"][] = [
 ];
 const PLACEHOLDER: Record<Mode, string> = {
   search: "Search or jump to…",
-  ask: "Ask about your creed…",
-  agent: "Tell Creed what to change…",
+ask: "Ask about your Grant profile…",
+  agent: "Tell Grant what to change…",
 };
 const AGENT_STAGES: AgentStage[] = ["reading", "planning", "writing", "filing"];
 const AGENT_RESULT_REFRESH_DELAYS_MS = [400, 1200] as const;
@@ -571,7 +571,7 @@ export function CreedPanel({
       },
       {
         id: "action:export-creed",
-        label: "Export creed",
+label: "Export Grant profile",
         group: "Actions",
         keywords: ["export", "download", "markdown", "backup"],
         icon: DownloadIcon as AnimatedIconComponent,
@@ -1223,7 +1223,7 @@ export function CreedPanel({
                   <div className="space-y-3">
                     {askTurns.length === 0 && askPhase === "idle" ? (
                       <div className="px-0.5 py-1 text-[13px] leading-[1.55] text-[var(--creed-text-tertiary)]">
-                        Ask about your creed, a feature, or where to find
+Ask about your Grant profile, a feature, or where to find
                         something. Type # to mention a section.
                       </div>
                     ) : null}
@@ -1279,7 +1279,7 @@ export function CreedPanel({
                   <div className="space-y-2.5">
                     {agentRun.status === "idle" ? (
                       <div className="px-0.5 py-1 text-[13px] leading-[1.55] text-[var(--creed-text-tertiary)]">
-                        Tell Creed what to change. It follows your agent
+                        Tell Grant what to change. It follows your agent
                         permissions. Type # to mention a section.
                       </div>
                     ) : null}

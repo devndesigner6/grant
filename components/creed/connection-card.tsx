@@ -58,7 +58,7 @@ const AGENT_OPEN_URLS: Record<string, string> = {
   manus: "https://manus.im",
 };
 
-// Anchor on Creed's own /docs page for the kebab's "Docs" action. Agents with
+// Anchor on Grant's own /docs page for the kebab's "Docs" action. Agents with
 // their own card there get a per-card anchor; the rest land on their group's
 // section.
 const AGENT_DOCS_ANCHORS: Record<string, string> = {
@@ -380,7 +380,7 @@ export function ConnectionCard({
                 onSelect={() => {
                   window.open(
                     mode === "cli"
-                      ? "/docs#creed-cli"
+                  ? "/docs#grant-cli"
                       : `/docs#${AGENT_DOCS_ANCHORS[connection.id] ?? "connect-mcp"}`,
                     "_blank",
                     "noopener,noreferrer",
@@ -462,7 +462,7 @@ export function ConnectionCard({
               </DialogTitle>
               <DialogDescription>
                 Disconnects {connection.name} and revokes its MCP tokens. It
-                stops reading your Creed until you reconnect and authorize it
+              stops reading your Grant profile until you reconnect and authorize it
                 again.
               </DialogDescription>
             </DialogHeader>

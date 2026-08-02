@@ -1,7 +1,7 @@
 "use client";
 
-// Three auto-playing mini-demos for the "How Creed works" section, telling the
-// Creed loop in three beats, each looping while on screen:
+// Three auto-playing mini-demos for the "How Grant works" section, telling the
+// Grant loop in three beats, each looping while on screen:
 //  - ReadDemo:   a generic chatbot. A prompt types into the input bar, sends,
 //                the agent calls `read creed` (tool chip), then answers from the
 //                profile.
@@ -91,9 +91,9 @@ function useLoopSequence(durations: readonly number[], restStep: number) {
   return { ref, step, setStep, playing };
 }
 
-// The Creed mark, masked so it picks up the current text colour (rather than the
+// The Grant mark, masked so it picks up the current text colour (rather than the
 // fixed black/white brand asset) and can be sized down to sit inline with text.
-function CreedGlyph({ className }: { className?: string }) {
+function GrantGlyph({ className }: { className?: string }) {
   return (
     <span
       aria-hidden
@@ -242,9 +242,9 @@ export function ReadDemo() {
           >
             <div className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--creed-surface-raised)] py-1.5 pl-1.5 pr-2.5 text-[12px] font-medium text-[var(--creed-text-primary)]">
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-[7px] bg-[#2563EB] text-white">
-                <CreedGlyph className="h-3 w-3" />
+                <GrantGlyph className="h-3 w-3" />
               </span>
-              <span>Read Creed</span>
+              <span>Read Grant</span>
               {step >= 3 ? (
                 <Check className="h-3 w-3 text-[var(--creed-success)]" />
               ) : (
@@ -600,7 +600,7 @@ export function ActivityDemo() {
       <DemoCard className="relative h-[352px] overflow-hidden p-0">
         <div className="flex h-11 items-center border-b border-[var(--creed-border)] px-3">
           <span className="text-[13px] font-medium text-[var(--creed-text-primary)]">
-            Chamath / Creed
+            Chamath / Grant
           </span>
           <button
             type="button"
@@ -652,7 +652,7 @@ export function ActivityDemo() {
                       Activity
                     </div>
                     <div className="mt-0.5 text-[10px] text-[var(--creed-text-tertiary)]">
-                      Agent changes to this Creed.
+                      Agent changes to this Grant profile.
                     </div>
                   </div>
                   <X className="h-3.5 w-3.5 text-[var(--creed-text-tertiary)]" />

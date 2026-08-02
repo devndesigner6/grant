@@ -11,22 +11,22 @@ export type FaqItem = {
 
 export const homeFaqItems: FaqItem[] = [
   {
-    question: "What actually goes in a Creed?",
+    question: "What actually goes in a Grant profile?",
     answer:
       "Who you are, what you're working toward, how you like AI to talk to you, the people and routines that shape your week, plus any health, accessibility, or hard noes AI should respect. One concise profile, not a journal.",
   },
   {
     question: "Why not just retell every AI who I am each time?",
     answer:
-      "Because it doesn't stick, doesn't cross tools, and you end up repeating yourself. Creed gives every AI the same profile to read before answering, and lets them propose updates as they learn more about you.",
+      "Because it doesn't stick, doesn't cross tools, and you end up repeating yourself. Grant gives every AI the same profile to read before answering, and lets them propose updates as they learn more about you.",
   },
   {
-    question: "Which tools does Creed work with?",
+    question: "Which tools does Grant work with?",
     answer:
-      "Creed connects to agents like Claude Code, Codex, Cursor, and ChatGPT over MCP, and integrates with GitHub for version control. Support for tools like Notion and Obsidian is coming for editing and storage.",
+      "Grant connects to agents like Claude Code, Codex, Cursor, and ChatGPT over MCP, and integrates with GitHub for version control. Support for tools like Notion and Obsidian is coming for editing and storage.",
   },
   {
-    question: "What gets written back to Creed?",
+    question: "What gets written back to Grant?",
     answer:
       "Durable things AI learns about you, a sharper preference, a new routine, a goal that shifted. Not session recap, not mood, not generic praise.",
   },
@@ -36,9 +36,9 @@ export const homeFaqItems: FaqItem[] = [
       "No. You can keep agent edits reviewable, or trust them to write directly when you want a lighter loop. The point is control when you want it, not friction by default.",
   },
   {
-    question: "Is Creed for teams or just for me?",
+    question: "Is Grant for teams or just for me?",
     answer:
-      "Both. Creed starts as a personal profile, and a Company workspace adds one shared context file that every member's agents read, with member roles, an activity view across the team, and admin controls.",
+      "Both. Grant starts as a personal profile, and a company workspace adds one shared context profile that every member's agents read, with member roles, an activity view across the team, and admin controls.",
   },
 ];
 
@@ -46,14 +46,14 @@ export const homeFaqItems: FaqItem[] = [
 // so an answer engine can quote a single item.
 export const companyFaqItems: FaqItem[] = [
   {
-    question: "What is a Company Creed?",
+    question: "What is a Grant company workspace?",
     answer:
-      "A Company Creed is one shared context file that every member's agents read before they act. It holds the canonical company context: how the team works, what it is building, and the conventions and constraints that apply to everyone, so agents stop drifting from how the team actually operates.",
+      "A Grant company workspace is one shared context profile that every member's agents read before they act. It holds the canonical company context: how the team works, what it is building, and the conventions and constraints that apply to everyone, so agents stop drifting from how the team actually operates.",
   },
   {
     question: "How is it different from a wiki or knowledge base?",
     answer:
-      "A wiki is a large, complete record for people to search. A Company Creed is short, curated, and written to be read by agents before they answer. It is the profile your AI reads, not the archive your team browses. Most teams keep both.",
+      "A wiki is a large, complete record for people to search. A Grant company profile is short, curated, and written to be read by agents before they answer. It is the profile your AI reads, not the archive your team browses. Most teams keep both.",
   },
   {
     question: "What roles does a Company workspace have?",
@@ -61,9 +61,9 @@ export const companyFaqItems: FaqItem[] = [
       "Three: Owner, who manages members and content; Admin, who manages members and content; and Member, who reads and proposes. Section permissions can further control who edits each section directly versus by proposal, and every change is attributed in the activity view.",
   },
   {
-    question: "Do team members need their own personal Creed?",
+    question: "Do team members need their own personal Grant profile?",
     answer:
-      "No. A member needs a Creed account, but not a personal Creed. They connect their own agents over MCP and read the shared Company Creed. They can keep a personal Creed too, and switch between them from the workspace dropdown.",
+      "No. A member needs a Grant account, but not a personal Grant profile. They connect their own agents over MCP and read the shared company profile. They can keep a personal Grant profile too, and switch between them from the workspace dropdown.",
   },
 ];
 
@@ -88,16 +88,16 @@ export const contextFileFaqItems: FaqItem[] = [
   {
     question: "What goes in a personal context file?",
     answer:
-      "Creed organizes it into ten sections: Identity, Goals, Work, Preferences, and Routines as the always-on core, plus optional Beliefs, Constraints, People, Health, and Context. Each section is short, specific, and written to change how AI responds.",
+      "Grant organizes it into ten sections: Identity, Goals, Work, Preferences, and Routines as the always-on core, plus optional Beliefs, Constraints, People, Health, and Context. Each section is short, specific, and written to change how AI responds.",
   },
   {
     question: "Which tools does a personal context file work with?",
     answer:
-      "Creed connects to agents like Claude Code, Codex, Cursor, and ChatGPT over MCP, and integrates with GitHub for version control. Support for Notion and Obsidian is on the way.",
+      "Grant connects to agents like Claude Code, Codex, Cursor, and ChatGPT over MCP, and integrates with GitHub for version control. Support for Notion and Obsidian is on the way.",
   },
   {
     question: "Do I own my personal context file?",
     answer:
-      "Yes. Creed is plain Markdown that you control. You bring your own AI key, your tokens stay yours, and deleting your account wipes everything. There is no lock-in.",
+      "Yes. Grant is plain Markdown that you control. You bring your own AI key, your tokens stay yours, and deleting your account wipes everything. There is no lock-in.",
   },
 ];

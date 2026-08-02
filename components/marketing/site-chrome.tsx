@@ -26,7 +26,6 @@ import { cn } from "@/lib/utils";
 import {
   DISCORD_URL,
   GITHUB_URL,
-  HPBRN_URL,
   INSTAGRAM_URL,
   TWITTER_URL,
 } from "@/lib/branding";
@@ -183,7 +182,7 @@ export function MarketingHeader({
       <div className="flex items-center md:hidden">
         <Link
           href="/home"
-          aria-label="Creed home"
+          aria-label="Grant home"
           className="shrink-0 transition-opacity duration-200 hover:opacity-60"
           onClick={() => setMobileMenuOpen(false)}
         >
@@ -196,7 +195,7 @@ export function MarketingHeader({
 
       <Link
         href="/home"
-        aria-label="Creed home"
+        aria-label="Grant home"
         className="hidden shrink-0 transition-opacity duration-200 hover:opacity-60 md:block"
       >
         <CreedWordmark className="ml-0" imageClassName={stickyChromeActive ? undefined : "invert brightness-0"} />
@@ -393,12 +392,13 @@ function GitHubStarButton({
   scrolled?: boolean;
 }) {
   const stars = useGitHubStars();
+  if (!GITHUB_URL) return null;
   return (
     <a
       href={GITHUB_URL}
       target="_blank"
       rel="noreferrer"
-      aria-label="Star Creed on GitHub"
+      aria-label="Star Grant on GitHub"
       onClick={onNavigate}
       className={cn(
         "inline-flex h-9 items-center gap-2.5 rounded-md px-3 text-[14px] font-medium shadow-none transition-colors duration-300",
@@ -771,7 +771,7 @@ export function MarketingFooter() {
           <div>
             <Link
               href="/home"
-              aria-label="Creed home"
+              aria-label="Grant home"
               className="inline-block transition-opacity hover:opacity-80"
             >
               <CreedWordmark />
@@ -779,9 +779,6 @@ export function MarketingFooter() {
             <p className="t-body-lg mt-4 max-w-sm text-[var(--creed-text-secondary)]">
               {CREED_TAGLINE}
             </p>
-          </div>
-          <div>
-            <SystemStatusPill href="https://status.creed.md" />
           </div>
         </div>
 
@@ -794,25 +791,12 @@ export function MarketingFooter() {
 
       <div className="mx-auto mt-8 flex max-w-7xl flex-col gap-4 border-t border-[var(--creed-border)] py-6 md:flex-row md:items-center md:justify-between">
         <div className="t-meta flex flex-wrap items-center gap-x-2 gap-y-1 text-[var(--creed-text-tertiary)]">
-          <span>© 2026 Creed</span>
-          <span aria-hidden="true">·</span>
-          <span>by</span>
-          <Link
-            href={HPBRN_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="font-medium text-[var(--creed-accent)] transition-colors hover:text-[var(--creed-accent-hover)]"
-          >
-            hpbrn
-          </Link>
+          <span>© 2026 Grant</span>
         </div>
         {/* Social icons: Discord and GitHub use the same full inline marks as
             the product UI; Instagram and X remain local SVG masks. */}
         <div className="flex items-center gap-4 text-[var(--creed-text-tertiary)]">
-          <InlineSocialIconLink
-            href={DISCORD_URL ?? "https://discord.com"}
-            label="Discord"
-          >
+          <InlineSocialIconLink href={DISCORD_URL} label="Discord">
             <DiscordMark className="h-5 w-5" />
           </InlineSocialIconLink>
           <InlineSocialIconLink

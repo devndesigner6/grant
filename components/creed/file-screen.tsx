@@ -1059,7 +1059,7 @@ export function FileScreen() {
   const [importBusy, setImportBusy] = useState(false);
   const [pushDialogOpen, setPushDialogOpen] = useState(false);
   const [pullDialogOpen, setPullDialogOpen] = useState(false);
-  const [pushMessage, setPushMessage] = useState("Update Creed");
+  const [pushMessage, setPushMessage] = useState("Update Grant profile");
   const [pushBusy, setPushBusy] = useState(false);
   const [pullBusy, setPullBusy] = useState(false);
   const [versionStatusBusy, setVersionStatusBusy] = useState(false);
@@ -1852,7 +1852,7 @@ export function FileScreen() {
 
   async function handleOpenPushReview() {
     setSelectedVersionAction("push");
-    setPushMessage("Update Creed");
+    setPushMessage("Update Grant profile");
     setPushPreview(null);
     setPushDialogOpen(true);
 
@@ -1926,21 +1926,21 @@ export function FileScreen() {
         body: JSON.stringify({
           markdown: localMarkdown,
           localHash,
-          message: pushMessage.trim() || "Update Creed",
+          message: pushMessage.trim() || "Update Grant profile",
         }),
       });
       const payload = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        throw new Error(payload.error || "Could not push Creed to GitHub.");
+        throw new Error(payload.error || "Could not push Grant profile to GitHub.");
       }
 
       await refreshState();
-      toast.success("Pushed Creed to GitHub");
+      toast.success("Pushed Grant profile to GitHub");
       setPushDialogOpen(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Could not push Creed",
+        error instanceof Error ? error.message : "Could not push Grant profile",
       );
     } finally {
       setPushBusy(false);
@@ -2014,18 +2014,18 @@ export function FileScreen() {
       const payload = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        throw new Error(payload.error || "Could not import Creed from GitHub");
+        throw new Error(payload.error || "Could not import Grant profile from GitHub");
       }
 
       await refreshState();
-      toast.success("Pulled Creed from GitHub");
+      toast.success("Pulled Grant profile from GitHub");
       setPullDialogOpen(false);
       setPullPreview(null);
     } catch (error) {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Could not import Creed from GitHub",
+          : "Could not import Grant profile from GitHub",
       );
     } finally {
       setPullBusy(false);
@@ -2435,8 +2435,8 @@ export function FileScreen() {
                           aria-label={
                             canRunQuality &&
                             (fullQualityDirty || qualityCanRunInitialAnalysis)
-                              ? "Run Creed quality analysis"
-                              : "Show Creed quality"
+                              ? "Run Grant quality analysis"
+                              : "Show Grant quality"
                           }
                         >
                           <QualityRing
@@ -2948,7 +2948,7 @@ export function FileScreen() {
                       </div>
                       <div className="max-w-sm text-[13px] leading-6 text-[var(--creed-text-secondary)]">
                         Restore a section from Settings, under Archived, to
-                        bring it back into your Creed.
+                        bring it back into your Grant profile.
                       </div>
                     </div>
                   ) : null}
@@ -3116,10 +3116,9 @@ export function FileScreen() {
       <Dialog open={pushDialogOpen} onOpenChange={setPushDialogOpen}>
         <DialogContent className="rounded-[var(--radius-xl)] border-[var(--creed-border)] bg-[var(--creed-surface)]">
           <DialogHeader>
-            <DialogTitle>Push Creed</DialogTitle>
+            <DialogTitle>Push Grant profile</DialogTitle>
             <DialogDescription>
-              This will save your current Creed as{" "}
-              <span className="font-mono text-[13px]">creed.md</span> to GitHub.
+              This will save your current Grant profile as the configured Grant profile file to GitHub.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -3168,7 +3167,7 @@ export function FileScreen() {
               onClick={() => void handlePushCreed()}
               disabled={pushBusy || !githubConfigured}
             >
-              {pushBusy ? "Pushing" : "Push Creed"}
+              {pushBusy ? "Pushing" : "Push Grant profile"}
               {pushBusy ? (
                 <LoaderCircle className="h-4 w-4 animate-spin" />
               ) : null}
@@ -3183,7 +3182,7 @@ export function FileScreen() {
             <DialogTitle>Pull from GitHub</DialogTitle>
             <DialogDescription>
               Review the remote{" "}
-              <span className="font-mono text-[13px]">creed.md</span> before it
+              the configured Grant profile file before it
               replaces your local file.
             </DialogDescription>
           </DialogHeader>
@@ -3221,7 +3220,7 @@ export function FileScreen() {
               onClick={() => void handleApplyPull()}
               disabled={pullBusy || !pullPreview}
             >
-              {pullBusy ? "Importing" : "Import remote Creed"}
+              {pullBusy ? "Importing" : "Import remote Grant profile"}
               {pullBusy ? (
                 <LoaderCircle className="h-4 w-4 animate-spin" />
               ) : null}
@@ -3331,7 +3330,7 @@ export function FileScreen() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
               <AlertTriangle className="h-5 w-5 text-[#B91C1C]" />
-              Delete Creed file
+              Delete Grant profile
             </DialogTitle>
             <DialogDescription>
               Wipes every section, proposal, and activity entry. Your account
@@ -4437,7 +4436,7 @@ const ActivityRailContent = memo(function ActivityRailContent({
             <div className="mt-1 text-[12px] text-[var(--creed-text-tertiary)]">
               {creedType === "company"
                 ? "Audit trail for governed collaboration."
-                : "Agent changes to your Creed."}
+                : "Agent changes to your Grant profile."}
             </div>
           </div>
           <Button variant="ghost" size="icon-sm" onClick={onClose}>

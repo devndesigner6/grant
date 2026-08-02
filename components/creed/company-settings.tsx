@@ -822,7 +822,7 @@ export function CompanySettings() {
 
   async function doDelete() {
     if (await post("/api/app/company", { creedId }, "DELETE")) {
-      toast.success("Company Creed deleted.");
+      toast.success("Company Grant workspace deleted.");
       router.push("/file");
       router.refresh();
     }
@@ -1600,7 +1600,7 @@ export function CompanySettings() {
             )
           }
         >
-          Export Creed as markdown
+          Export Grant as markdown
         </AnimatedIconButton>
         <AnimatedIconButton
           icon={DownloadIcon}
@@ -1682,10 +1682,10 @@ export function CompanySettings() {
           <div className="flex items-center justify-between gap-5">
             <div className="min-w-0">
               <div className="text-[15px] font-medium text-[#DC2626]">
-                Delete company Creed
+                Delete company Grant workspace
               </div>
               <div className="mt-2 hidden text-[14px] leading-7 text-[#DC2626] md:block">
-                Permanently deletes the company Creed and all its content for
+                Permanently deletes the company Grant workspace and all its content for
                 every member.
               </div>
             </div>
@@ -1803,11 +1803,11 @@ export function CompanySettings() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
               <AlertTriangle className="h-5 w-5 text-[#B91C1C]" />
-              Delete company Creed
+              Delete company Grant workspace
             </DialogTitle>
           </DialogHeader>
           <p className="text-[14px] leading-7 text-[var(--creed-text-secondary)]">
-            This permanently deletes the company Creed and all its content for
+            This permanently deletes the company Grant workspace and all its content for
             everyone. This cannot be undone. Type the company name to confirm.
           </p>
           <Input

@@ -2,7 +2,7 @@
 //
 // These power rich results in classic search and, more importantly, give
 // answer engines (AI Overviews, Perplexity, ChatGPT) a machine-readable
-// description of what Creed is, what it costs, and the questions it answers.
+// description of what Grant is and the questions it answers.
 // Everything is first-party constant data resolved against the deploy origin,
 // so it stays accurate without per-request work.
 //
@@ -13,7 +13,7 @@ import type { FaqItem } from "@/lib/marketing/faq";
 import { CREED_DESCRIPTION, CREED_TAGLINE } from "@/lib/marketing/brand";
 import { getSiteUrl } from "@/lib/supabase/env";
 
-const SITE_NAME = "Creed";
+const SITE_NAME = "Grant";
 
 function base() {
   return getSiteUrl().replace(/\/$/, "");
@@ -28,7 +28,7 @@ function websiteId() {
 }
 
 // The brand entity. `sameAs` ties the site to its off-site profiles, which is
-// one of the signals engines use to resolve "Creed" to a real organization
+// one of the signals engines use to resolve "Grant" to a real organization
 // rather than a common noun.
 export function organizationSchema() {
   const url = base();

@@ -13,7 +13,7 @@ import {
 const PATH = "/company";
 const TITLE = "Company workspaces";
 const DESCRIPTION =
-  "One shared Company Creed every member's agents read, with roles, section permissions, an activity view, and admin controls.";
+  "One shared Grant context workspace every member's agents can use, with roles, section permissions, an activity view, and admin controls.";
 const DATE_MODIFIED = "2026-07-07";
 
 export const metadata: Metadata = {
@@ -29,12 +29,12 @@ export default function CompanyPage() {
         data={graph(
           webPageSchema({
             path: PATH,
-            name: "Creed Company workspaces",
+            name: "Grant company workspaces",
             description: DESCRIPTION,
             dateModified: DATE_MODIFIED,
           }),
           breadcrumbSchema(PATH, [
-            { name: "Creed", path: "/home" },
+            { name: "Grant", path: "/home" },
             { name: "Company", path: PATH },
           ]),
           softwareApplicationSchema(),

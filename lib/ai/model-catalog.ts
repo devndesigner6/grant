@@ -112,8 +112,8 @@ const seedModels: AiModelCatalogItem[] = [
     quality: "excellent",
     inputCostPerMillion: 5,
     outputCostPerMillion: 30,
-    description: "Best default for turning rough context into a sharp Creed.",
-    benchmark: { label: "Creed reasoning proxy", score: 96 },
+    description: "Best default for turning rough context into a sharp Grant profile.",
+    benchmark: { label: "Grant reasoning proxy", score: 96 },
   },
   {
     id: "anthropic/claude-sonnet-4.6",
@@ -123,7 +123,7 @@ const seedModels: AiModelCatalogItem[] = [
     inputCostPerMillion: 3,
     outputCostPerMillion: 15,
     description: "Strong synthesis and taste with a calmer style.",
-    benchmark: { label: "Creed reasoning proxy", score: 93 },
+    benchmark: { label: "Grant reasoning proxy", score: 93 },
   },
   {
     id: "google/gemini-3-pro",
@@ -133,7 +133,7 @@ const seedModels: AiModelCatalogItem[] = [
     inputCostPerMillion: 2,
     outputCostPerMillion: 12,
     description: "Capable long-context analysis for quality checks.",
-    benchmark: { label: "Creed reasoning proxy", score: 86 },
+    benchmark: { label: "Grant reasoning proxy", score: 86 },
   },
   {
     id: "x-ai/grok-4",
@@ -143,7 +143,7 @@ const seedModels: AiModelCatalogItem[] = [
     inputCostPerMillion: 3,
     outputCostPerMillion: 15,
     description: "Useful for direct critique and broad inference.",
-    benchmark: { label: "Creed reasoning proxy", score: 82 },
+    benchmark: { label: "Grant reasoning proxy", score: 82 },
   },
   {
     id: "openai/gpt-5",
@@ -153,7 +153,7 @@ const seedModels: AiModelCatalogItem[] = [
     inputCostPerMillion: 1.25,
     outputCostPerMillion: 10,
     description: "A cheaper strong fallback for routine refinement.",
-    benchmark: { label: "Creed reasoning proxy", score: 84 },
+    benchmark: { label: "Grant reasoning proxy", score: 84 },
   },
   {
     id: "openai/gpt-5.4-mini",
@@ -163,7 +163,7 @@ const seedModels: AiModelCatalogItem[] = [
     inputCostPerMillion: 0.25,
     outputCostPerMillion: 2,
     description: "Only use when cost matters more than depth.",
-    benchmark: { label: "Creed reasoning proxy", score: 58 },
+    benchmark: { label: "Grant reasoning proxy", score: 58 },
   },
 ];
 

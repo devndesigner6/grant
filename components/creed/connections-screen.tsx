@@ -43,14 +43,14 @@ const SETUP_STEPS = [
 const CLI_SETUP_STEPS = [
   {
     title: "Copy the CLI command",
-    detail: "Run Creed directly with npx, with no global install required.",
+    detail: "Run Grant directly with npx, with no global install required.",
   },
   {
     title: "Launch it in your terminal",
-    detail: "The first run opens Creed's OAuth screen in your browser.",
+    detail: "The first run opens Grant's OAuth screen in your browser.",
   },
   {
-    title: "Choose your Creed and allow",
+    title: "Choose your Grant profile and allow",
     detail: "Return to the terminal after approval and every live tool is ready.",
   },
 ];
@@ -219,8 +219,8 @@ export function ConnectionsScreen() {
           </h2>
           <p className="mt-2 text-[14px] leading-7 text-[var(--creed-text-secondary)]">
             {connectionMode === "mcp"
-              ? "Paste the server URL into any MCP agent, then authorize Creed in the browser."
-              : "Run Creed CLI from any terminal, then authorize the same Creed OAuth screen in your browser."}
+              ? "Paste the server URL into any MCP agent, then authorize Grant in the browser."
+              : "Run the Grant CLI from any terminal, then authorize the same Grant OAuth screen in your browser."}
           </p>
         </div>
 
@@ -414,7 +414,7 @@ export function ConnectionsScreen() {
             </div>
 
             <div className="pointer-events-none relative z-10 mt-4 w-fit max-w-full self-start rounded-[var(--radius-md)] border border-[var(--creed-border)] px-3 py-2 font-mono text-[13px] text-[var(--creed-text-primary)]">
-              <span className="block break-all">npx creed-cli</span>
+              <span className="block break-all">npx grant-cli</span>
             </div>
 
             <div className="relative z-10 mt-4 flex flex-wrap items-center gap-3">
@@ -424,7 +424,7 @@ export function ConnectionsScreen() {
                 className="creed-copy-cycle min-w-[116px] justify-center rounded-md px-4 text-white"
                 onClick={() => {
                   setConnectionMode("cli");
-                  void copyValue("cli-command", "npx creed-cli");
+                    void copyValue("cli-command", "npx grant-cli");
                 }}
               >
                 {copied === "cli-command" ? (
@@ -489,8 +489,8 @@ export function ConnectionsScreen() {
             </h2>
             <p className="mt-2 text-[14px] leading-7 text-[var(--creed-text-secondary)]">
               {connectionMode === "mcp"
-                ? "Every agent Creed supports and its MCP connection status."
-                : "Use Creed CLI with any agent from the same terminal workflow."}
+                ? "Every agent Grant supports and its MCP connection status."
+                : "Use the Grant CLI with any agent from the same terminal workflow."}
             </p>
           </div>
           <Dropdown

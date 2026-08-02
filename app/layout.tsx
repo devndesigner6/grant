@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
     default: CREED_META_TITLE,
-    template: "%s | Creed",
+    template: "%s | Grant",
   },
   description: CREED_DESCRIPTION,
   icons: {
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    siteName: "Creed",
+    siteName: "Grant",
     title: CREED_META_TITLE,
     description: CREED_DESCRIPTION,
   },

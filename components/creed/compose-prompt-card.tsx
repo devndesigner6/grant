@@ -8,7 +8,7 @@ import { CopyIcon } from "@/components/ui/copy";
 import type { AgentIconKind } from "@/lib/creed-data";
 
 // The onboarding "copy the compose prompt" card, shared by both the personal
-// and company onboarding flows so they stay identical. Both build a Creed the
+// and company onboarding flows so they stay identical. Both build a Grant profile the
 // same way (paste the prompt into any assistant, get markdown back), and both
 // have the same model access, so there is one card - update it here and both
 // update. Callers own the headline/lede above it and pass the copy handler.
@@ -48,7 +48,7 @@ export function ComposePromptCard({
         <Plus strokeWidth={2} className="h-8 w-8 shrink-0 p-[7px] text-[var(--creed-text-primary)]" />
       </div>
       <p className="mt-4 text-[13px] leading-6 text-[var(--creed-text-secondary)]">
-        Paste this prompt into any AI. It replies with a markdown Creed you paste back into Creed on
+Paste this prompt into any AI. It replies with a markdown Grant profile you paste back into Grant on
         the next page.
       </p>
       <div className="mt-4">

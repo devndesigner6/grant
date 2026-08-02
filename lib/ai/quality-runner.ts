@@ -145,7 +145,7 @@ export function runFullQuality(args: FullRunArgs): Promise<FullRunResult> {
       const payload = (await response.json()) as FullRunResult & { error?: string };
 
       if (!response.ok) {
-        throw new Error(payload.error || "Could not analyze Creed quality.");
+        throw new Error(payload.error || "Could not analyze Grant profile quality.");
       }
 
       if (payload.report) {
@@ -161,7 +161,7 @@ export function runFullQuality(args: FullRunArgs): Promise<FullRunResult> {
       }
       return payload;
     } catch (cause) {
-      const message = cause instanceof Error ? cause.message : "Could not analyze Creed quality.";
+      const message = cause instanceof Error ? cause.message : "Could not analyze Grant profile quality.";
       error = message;
       if (!args.readOnly) {
         recordOutcome({ ok: false, message });

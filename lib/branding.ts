@@ -7,35 +7,20 @@
 //   NEXT_PUBLIC_INSTAGRAM_URL   = absolute URL of the project's Instagram profile
 //   NEXT_PUBLIC_GITHUB_URL      = absolute URL of the project's GitHub org / repo
 //   NEXT_PUBLIC_DISCORD_URL     = absolute URL of the project's Discord invite
-//   NEXT_PUBLIC_HPBRN_URL       = absolute URL of the hpbrn site/profile
 //
-// Anything left unset falls back to a sensible no-op (an empty string for the
-// email, `null` for social links so the chrome can hide the icon entirely).
+// Anything left unset is hidden. A Grant deployment must intentionally supply
+// its own contact and social links instead of inheriting upstream identities.
+function optionalPublicUrl(value: string | undefined): string | null {
+  return value?.trim() || null;
+}
 
-// Fallback contact address surfaced in legal pages, footer, and the
-// feedback menu when NEXT_PUBLIC_CONTACT_EMAIL isn't set. Forks can
-// override via the env var.
-const fallbackContactEmail = "connor@hpbrn.com";
-
-export const CONTACT_EMAIL =
-  process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || fallbackContactEmail;
-
-export const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}`;
-
-// Default social URLs surface on the deployed site without needing env
-// vars set. Forks can override via NEXT_PUBLIC_*_URL or set the env var
-// to an empty string to hide the icon entirely.
-export const TWITTER_URL =
-  process.env.NEXT_PUBLIC_TWITTER_URL?.trim() || "https://x.com/connorhpbrn";
-export const INSTAGRAM_URL =
-  process.env.NEXT_PUBLIC_INSTAGRAM_URL?.trim() || "https://instagram.com/connorhpbrn";
-export const GITHUB_URL =
-  process.env.NEXT_PUBLIC_GITHUB_URL?.trim() || "https://github.com/connorhpbrn/creed";
-export const HPBRN_URL =
-  process.env.NEXT_PUBLIC_HPBRN_URL?.trim() || "https://hpbrn.cc";
+export const CONTACT_EMAIL = optionalPublicUrl(process.env.NEXT_PUBLIC_CONTACT_EMAIL);
+export const CONTACT_MAILTO = CONTACT_EMAIL ? `mailto:${CONTACT_EMAIL}` : null;
+export const TWITTER_URL = optionalPublicUrl(process.env.NEXT_PUBLIC_TWITTER_URL);
+export const INSTAGRAM_URL = optionalPublicUrl(process.env.NEXT_PUBLIC_INSTAGRAM_URL);
+export const GITHUB_URL = optionalPublicUrl(process.env.NEXT_PUBLIC_GITHUB_URL);
 
 // Discord invite. No hardcoded fallback: until a permanent invite is set via
 // NEXT_PUBLIC_DISCORD_URL, surfaces that need the actual invite can hide their
 // Discord CTA rather than shipping a dead community link.
-export const DISCORD_URL =
-  process.env.NEXT_PUBLIC_DISCORD_URL?.trim() || null;
+export const DISCORD_URL = optionalPublicUrl(process.env.NEXT_PUBLIC_DISCORD_URL);

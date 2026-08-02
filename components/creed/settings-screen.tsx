@@ -558,7 +558,7 @@ function PersonalSettingsScreen() {
   }
 
 
-  // GitHub is connected through the standalone "Creed" OAuth App (not Supabase
+  // GitHub is connected through the standalone Grant OAuth App (not Supabase
   // identity linking): a full-page redirect to /api/app/github/authorize, which
   // bounces through GitHub and back to /settings?github=<status> (handled above).
   function handleConnectGitHub() {
@@ -1200,7 +1200,7 @@ function PersonalSettingsScreen() {
                     downloadFile("creed.md", exportMarkdown(), "text/markdown;charset=utf-8")
                   }
                 >
-                  Export Creed as markdown
+                  Export Grant as markdown
                 </AnimatedIconButton>
                 <AnimatedIconButton
                   icon={DownloadIcon}
@@ -1245,7 +1245,7 @@ function PersonalSettingsScreen() {
                 <div className="min-w-0">
                   <div className="text-[15px] font-medium text-[#DC2626] dark:text-[#DC2626]">Account Deletion</div>
                   <div className="mt-2 hidden text-[14px] leading-7 text-[#DC2626] dark:text-[#DC2626] md:block">
-                    This permanently deletes your Creed, tokens, proposals, activity, and account.
+                    This permanently deletes your Grant profile, tokens, proposals, activity, and account.
                   </div>
                 </div>
                 <Button

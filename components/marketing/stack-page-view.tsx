@@ -35,7 +35,7 @@ const stackRows = [
   },
   {
     name: "GitHub",
-    purpose: "Version control and optional Creed file sync",
+    purpose: "Version control and optional Grant profile sync",
     mobilePurpose: "Version control",
     website: "https://github.com",
   },
@@ -68,7 +68,7 @@ export function StackPageView() {
         <div className="border-b border-[var(--creed-border)] pb-8">
           <AnimatedPageTitle text="Stack" />
           <p className="t-lede mt-5 max-w-2xl text-[var(--creed-text-secondary)]">
-            The technology Creed uses to run, store, and process your data.
+            The technology Grant uses to run, store, and process your data.
           </p>
         </div>
 

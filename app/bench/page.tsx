@@ -16,7 +16,7 @@ import { CREED_BENCH_TOOLS } from "@/bench/tool-contract";
 const PATH = "/bench";
 const TITLE = "Benchmarks";
 const DESCRIPTION =
-  "Creed Bench measures how well frontier models use Creed through its tools.";
+  "Grant Bench measures how well frontier models use Grant through its tools.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -106,7 +106,7 @@ export default function BenchPage() {
         data={graph(
           webPageSchema({ path: PATH, name: TITLE, description: DESCRIPTION }),
           breadcrumbSchema(PATH, [
-            { name: "Creed", path: "/home" },
+            { name: "Grant", path: "/home" },
             { name: "Benchmarks", path: PATH },
           ])
         )}
@@ -118,7 +118,7 @@ export default function BenchPage() {
           <header className="border-b border-[var(--creed-border)] pb-8">
             <AnimatedPageTitle text={TITLE} />
             <p className="mt-4 max-w-2xl text-[18px] leading-8 text-[var(--creed-text-secondary)]">
-              How well frontier models read and maintain a Creed through its
+              How well frontier models read and maintain a Grant profile through its
               tools.
             </p>
           </header>
@@ -128,11 +128,11 @@ export default function BenchPage() {
 
           <section className="mt-12 border-t border-[var(--creed-border)] pt-8">
             <h2 className="text-[20px] font-medium tracking-[-0.02em] text-[var(--creed-text-primary)] sm:text-[24px]">
-              How Creed Bench works
+              How Grant Bench works
             </h2>
             <div className="mt-3 space-y-5 text-[15px] leading-7 text-[var(--creed-text-secondary)]">
               <p>
-                Creed Bench measures whether a model can use Creed the way a
+                Grant Bench measures whether a model can use Grant the way a
                 connected agent should: through the real MCP tool surface, not
                 by stuffing context into a prompt and hoping for the best.
               </p>
@@ -144,7 +144,7 @@ export default function BenchPage() {
                 <span className="hljs-string">openai/gpt-5.6-sol</span>
               </BenchCommand>
               <p>
-                Each trial starts from a fresh synthetic Creed. The model gets
+                Each trial starts from a fresh synthetic Grant profile. The model gets
                 the same {CREED_BENCH_TOOLS.length} tools production agents get,
                 one user request, and a live write policy. It can read, search,
                 update, append, create, rename, recolor, reorder, delete,
@@ -154,13 +154,13 @@ export default function BenchPage() {
               <p>
                 Eight tasks are single-tool, ten are realistic multi-tool
                 workflows, and six are adversarial policy or restraint cases.
-                Together they cover every Creed MCP tool, including when to
+                Together they cover every Grant MCP tool, including when to
                 write, when not to, formatting, maintenance, recovery from bad
                 arguments, and locked or proposal-only sections.
               </p>
               <p>
                 Single-tool tasks check that the model can find and use the
-                right Creed tool for a narrow request:
+                right Grant tool for a narrow request:
               </p>
               <BenchTable
                 headers={["Task", "Tools covered"]}
@@ -184,7 +184,7 @@ export default function BenchPage() {
               </BenchCommand>
               <p>
                 When the model finishes, deterministic graders check the
-                outcome: final Creed state, proposal versus direct mode,
+                outcome: final Grant profile state, proposal versus direct mode,
                 required contract steps, forbidden mutations, and whether the
                 answer is grounded. Equivalent correct paths can pass. Lucky
                 one-shot trajectories are not enough on their own.
