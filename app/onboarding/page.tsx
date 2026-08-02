@@ -8,14 +8,11 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 // Onboarding is free and lives outside the (creed-app) route group. Anyone
 // signed in can run it (answer questions, build with their assistant via a
 // copy-paste prompt, preview).
-// We pass two signals to the screen:
-//   - paid: stays true while the legacy screen still owns its final CTA. Grant
-//     access is free for authenticated users.
-//   - initialStage: resume point. A composed Creed resumes on the preview; a
+// We pass one signal to the screen:
+//   - initialStage: resume point. A composed Grant profile resumes on the preview; a
 //     claimed-but-not-composed seed resumes on the prompt step; otherwise the
 //     screen starts at step 0.
 export default async function OnboardingPage() {
-  const paid = true;
   let initialStage: "prompt" | "preview" | undefined;
 
   if (isSupabaseConfigured()) {
@@ -48,5 +45,5 @@ export default async function OnboardingPage() {
     }
   }
 
-  return <OnboardingScreen paid={paid} initialStage={initialStage} />;
+  return <OnboardingScreen initialStage={initialStage} />;
 }

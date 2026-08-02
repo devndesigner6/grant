@@ -1,6 +1,6 @@
 "use client";
 
-// One-time welcome pop-up. Shown the first time a paid + onboarded user lands
+// One-time welcome pop-up. Shown the first time an onboarded user lands
 // in the app (see app/(creed-app)/layout.tsx, which computes `show`). Slides:
 // what to do now, the features, what's coming, and a funnel into the Discord.
 // "Skip" on the first slide jumps to the last slide, it is not a dismissal.
@@ -16,7 +16,7 @@
 // Closing (X, Esc, overlay click, or the final Done button) marks the tour
 // seen; clicking an inline link (roadmap, Discord) marks it seen too. Seen is
 // persisted two ways: a POST to /api/welcome/seen (server truth) and a
-// localStorage mirror keyed to paid_at (anti-flash + covers a lost POST).
+// localStorage mirror (anti-flash + covers a lost POST).
 //
 // Dev preview: press P (outside any text field) in development to open the tour
 // on demand. It reads the active space's variant (set by the app shell) so P
@@ -340,7 +340,6 @@ function MediaFrame({
 
 type WelcomeDialogProps = {
   show: boolean;
-  paidAt: string | null;
   // The active space's variant, driving colour + slides + media folder.
   variant?: WelcomeVariant;
   // When true (dev preview mount only), this instance listens for the P
@@ -351,7 +350,6 @@ type WelcomeDialogProps = {
 
 export function WelcomeDialog({
   show,
-  paidAt,
   variant: variantProp = "personal",
   previewHotkey = false,
 }: WelcomeDialogProps) {
@@ -387,18 +385,18 @@ export function WelcomeDialog({
     fireWelcomeConfetti();
   }, [open]);
 
-  // Real first-run open: only when the server says to and this device hasn't
-  // already dismissed it for the current paid_at.
+  // Real first-run open: only when the server says to and this device has not
+  // already dismissed the tour.
   useEffect(() => {
-    if (!show || !paidAt) return;
+    if (!show) return;
     try {
-      if (localStorage.getItem(STORAGE_KEY) === paidAt) return;
+      if (localStorage.getItem(STORAGE_KEY) === "seen") return;
     } catch {
       // localStorage unavailable (private mode): fall through and show.
     }
     const t = setTimeout(() => setOpen(true), OPEN_DELAY_MS);
     return () => clearTimeout(t);
-  }, [show, paidAt]);
+  }, [show]);
 
   // Dev-only P shortcut to preview the tour on demand.
   useEffect(() => {
@@ -432,14 +430,14 @@ export function WelcomeDialog({
     if (devPreviewRef.current || seenRef.current) return;
     seenRef.current = true;
     try {
-      if (paidAt) localStorage.setItem(STORAGE_KEY, paidAt);
+      localStorage.setItem(STORAGE_KEY, "seen");
     } catch {
       // ignore
     }
     void fetch("/api/welcome/seen", { method: "POST", keepalive: true }).catch(
       () => {},
     );
-  }, [paidAt]);
+  }, []);
 
   const handleOpenChange = useCallback(
     (next: boolean) => {

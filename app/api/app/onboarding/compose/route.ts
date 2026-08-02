@@ -6,10 +6,10 @@ import { parseCreedMarkdown } from "@/lib/creed-markdown";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { recordAuditEvent } from "@/lib/audit-log";
 
-// Onboarding compose via copy-paste (replaces the old MCP compose_creed). The
-// user pastes the markdown Creed their assistant produced; we parse it and map
+// Onboarding compose via copy-paste. The user pastes the Markdown Grant profile
+// their assistant produced; we parse it and map
 // the bodies onto their seed sections. Session-authed (not the MCP write token):
-// onboarding never touches MCP, which stays a paid-only feature.
+// onboarding never touches MCP, which users configure separately.
 //
 // Initialize-only: it runs only while the Creed is still the pristine seed (no
 // section is agent-authored yet), so it can never wipe real edits. Parsing reuse

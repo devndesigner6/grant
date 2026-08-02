@@ -38,7 +38,7 @@ export default async function CreedAppLayout({ children }: { children: ReactNode
     // the app can render. Production deployments always have Supabase.
     return (
       <AuthedProviders>
-        <AppShellLayout showWelcome={false} welcomePaidAt={null}>
+        <AppShellLayout showWelcome={false}>
           {children}
         </AppShellLayout>
         <AppVersionNotifier initialVersion={getAppVersion()} />
@@ -91,7 +91,7 @@ export default async function CreedAppLayout({ children }: { children: ReactNode
 
   return (
     <AuthedProviders>
-      <AppShellLayout showWelcome={false} welcomePaidAt={null}>
+      <AppShellLayout showWelcome={false}>
         {children}
       </AppShellLayout>
       <AppVersionNotifier initialVersion={getAppVersion()} />

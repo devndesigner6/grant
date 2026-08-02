@@ -130,7 +130,7 @@ export function WelcomeDevPreview() {
     <>
       {/* Preload the clips so the P preview never lands on an unloaded slide. */}
       <WelcomeVideoPreloader />
-      <WelcomeDialog show={false} paidAt={null} previewHotkey />
+      <WelcomeDialog show={false} previewHotkey />
       <GettingStartedDevPreview />
       <VersionToastDevPreview />
     </>

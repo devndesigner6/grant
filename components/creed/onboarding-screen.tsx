@@ -35,9 +35,9 @@ import { cn } from "@/lib/utils";
 // 10-step flow indexed 0-9: welcome / Q1 identity / explainer / Q2 goals /
 // explainer / Q3 preferences / explainer / prompt / paste / preview. Three open
 // questions feed a deterministic seed draft; three explainer slides woven
-// through them teach what Creed is. The user copies a prompt into any
-// assistant, which returns a markdown Creed they paste back. No MCP in
-// onboarding - the agent connection is a paid feature set up later. Each step
+  // through them teach what Grant is. The user copies a prompt into any
+  // assistant, which returns a Markdown Grant profile they paste back. MCP
+  // connections are configured separately after onboarding. Each step
 // picks an accent for the top progress bar so the colour tracks where the user
 // is in the flow.
 const TOTAL_STEPS = 10;
@@ -91,8 +91,8 @@ export function OnboardingScreen({
   }, [state.user.name]);
 
   // Paste-compose result: set from the /api/app/onboarding/compose response when
-  // the user pastes the markdown their assistant produced. Falls back to provider
-  // state so a resuming, already-composed user still sees their Creed.
+  // the user pastes the Markdown their assistant produced. Falls back to provider
+  // state so a resuming, already-composed user still sees their Grant profile.
   const [composedResult, setComposedResult] = useState<CreedSection[] | null>(null);
   const [pasted, setPasted] = useState("");
   const [pasteError, setPasteError] = useState<string | null>(null);
@@ -103,10 +103,8 @@ export function OnboardingScreen({
     state.sections.some((section) => section.lastEditedType === "agent");
 
   // A returning user who already has a composed profile skips onboarding and
-  // goes straight to /file. We gate on `paid` so unpaid composed users (whom the
-  // app layout sends here to pay) are NOT bounced - that would loop them
-  // /file <-> /onboarding. They instead start on the preview (via initialStage)
-  // with the primary action. We only bounce at step 0, never mid-flow.
+  // goes straight to /file. Users who resume during onboarding land on the
+  // supplied initial stage. We only redirect from step 0, never mid-flow.
   useEffect(() => {
     if (step === 0 && composed) {
       router.replace("/file");

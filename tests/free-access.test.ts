@@ -114,13 +114,24 @@ test("company UI no longer derives read-only state from billing", () => {
   assert.doesNotMatch(companySettings, /payment did not go through/);
 });
 
+test("welcome state does not depend on a billing timestamp", () => {
+  const appShell = readSource("../components/creed/app-shell-layout.tsx");
+  const welcomeDialog = readSource("../components/creed/welcome-dialog.tsx");
+
+  assert.doesNotMatch(appShell, /welcomePaidAt|paidAt/);
+  assert.doesNotMatch(welcomeDialog, /paidAt|paid_at/);
+});
+
 test("onboarding and retired public routes do not send users to checkout", () => {
   const onboarding = readSource("../components/creed/onboarding-screen.tsx");
+  const onboardingPage = readSource("../app/onboarding/page.tsx");
   const pricing = readSource("../app/pricing/page.tsx");
   const success = readSource("../app/payment/success/page.tsx");
   const cancelled = readSource("../app/payment/cancelled/page.tsx");
 
   assert.doesNotMatch(onboarding, /checkout|entitlement|subscription/i);
+  assert.doesNotMatch(onboarding, /\bpaid\b/);
+  assert.doesNotMatch(onboardingPage, /\bpaid\b/);
   for (const source of [pricing, success, cancelled]) {
     assert.match(source, /redirect\("\/"\)/);
   }
