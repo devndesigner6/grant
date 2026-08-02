@@ -10,14 +10,14 @@ Grant tools therefore appear automatically without a matching CLI release.
 ## Install
 
 ```bash
-npm install --global @devndesigner/grant-cli
+npm install --global grant-cli
 grant
 ```
 
 You can also run it without installing:
 
 ```bash
-npx @devndesigner/grant-cli
+npx grant-cli
 ```
 
 The first run opens Grant's OAuth screen in your browser. Click Allow and return

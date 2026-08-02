@@ -1,5 +1,5 @@
 {
-  "name": "@devndesigner/grant-cli",
+  "name": "grant-cli",
   "version": "0.2.2",
   "description": "The first-party terminal client for Grant.",
   "license": "MIT",

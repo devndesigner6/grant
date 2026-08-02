@@ -36,7 +36,7 @@ Grant is free for authenticated users. AI features use the encrypted OpenRouter 
 
 Open `/connections` and add the Grant MCP URL to your agent as a custom connector. Grant is an OAuth 2.1 authorization server, so spec-compliant MCP clients can connect from the server URL and authorize in the browser.
 
-Grant supports Claude Code, Codex, Cursor, ChatGPT, OpenCode, and custom MCP clients. Connected agents can read permitted context and propose or make permitted edits. Grant CLI source remains in `packages/creed-cli/` while that legacy folder name is retained for repository compatibility. Its publication target is `@devndesigner/grant-cli` with the `grant` command.
+Grant supports Claude Code, Codex, Cursor, ChatGPT, OpenCode, and custom MCP clients. Connected agents can read permitted context and propose or make permitted edits. Grant CLI source remains in `packages/creed-cli/` while that legacy folder name is retained for repository compatibility. Its publication target is `grant-cli` with the `grant` command.
 
 ## Stack
 
