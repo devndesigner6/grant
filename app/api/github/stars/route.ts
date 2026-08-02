@@ -12,6 +12,7 @@ const CACHE_HEADERS = {
 };
 
 function repoSlug(): string | null {
+  if (!GITHUB_URL) return null;
   const match = GITHUB_URL.match(/github\.com\/([^/]+)\/([^/?#]+)/);
   return match ? `${match[1]}/${match[2].replace(/\.git$/, "")}` : null;
 }
