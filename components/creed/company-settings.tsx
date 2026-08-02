@@ -931,70 +931,72 @@ export function CompanySettings() {
   blocks.push(
     <Section key="members" title="Members & permissions">
       {isManager ? (
-        <div className="mb-5 flex items-center gap-3">
-          <Input
-            type="email"
-            placeholder="teammate@company.com"
-            value={inviteEmail}
-            onChange={(e) => setInviteEmail(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && inviteEmail.trim() && !inviting)
-                void sendInvite();
-            }}
-            className={`${FIELD_INPUT} flex-1`}
-          />
-          <Button
-            className={`${INVITE_BUTTON} h-11`}
-            onClick={sendInvite}
-            disabled={inviting || !inviteEmail.trim()}
-            onMouseEnter={inviteIcon.start}
-            onMouseLeave={inviteIcon.settle}
-          >
-            {inviting ? (
-              <>
-                Inviting
-                <LoaderCircle className="h-4 w-4 animate-spin" />
-              </>
-            ) : (
-              <>
-                Invite
-                <SendIcon
-                  ref={inviteIcon.iconRef}
-                  size={16}
-                  className="inline-flex h-4 w-4 shrink-0 items-center justify-center leading-none"
-                />
-              </>
-            )}
-          </Button>
-        </div>
-        {manualInviteLink ? (
-          <div className="mb-5 rounded-xl border border-[var(--creed-border)] bg-[var(--creed-surface-raised)] p-3">
-            <p className="text-[13px] leading-5 text-[var(--creed-text-secondary)]">
-              Email is not configured. Copy this invite link to deliver it manually.
-            </p>
-            <div className="mt-3 flex gap-2">
-              <Input
-                readOnly
-                value={manualInviteLink}
-                aria-label="Manual company invite link"
-                className={`${FIELD_INPUT} min-w-0 flex-1 text-[13px]`}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-md border-[var(--creed-border)] px-3"
-                onClick={() => {
-                  void navigator.clipboard.writeText(manualInviteLink).then(
-                    () => toast.success("Invite link copied."),
-                    () => toast.error("Could not copy the invite link."),
-                  );
-                }}
-              >
-                Copy link
-              </Button>
-            </div>
+        <>
+          <div className="mb-5 flex items-center gap-3">
+            <Input
+              type="email"
+              placeholder="teammate@company.com"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && inviteEmail.trim() && !inviting)
+                  void sendInvite();
+              }}
+              className={`${FIELD_INPUT} flex-1`}
+            />
+            <Button
+              className={`${INVITE_BUTTON} h-11`}
+              onClick={sendInvite}
+              disabled={inviting || !inviteEmail.trim()}
+              onMouseEnter={inviteIcon.start}
+              onMouseLeave={inviteIcon.settle}
+            >
+              {inviting ? (
+                <>
+                  Inviting
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                </>
+              ) : (
+                <>
+                  Invite
+                  <SendIcon
+                    ref={inviteIcon.iconRef}
+                    size={16}
+                    className="inline-flex h-4 w-4 shrink-0 items-center justify-center leading-none"
+                  />
+                </>
+              )}
+            </Button>
           </div>
-        ) : null}
+          {manualInviteLink ? (
+            <div className="mb-5 rounded-xl border border-[var(--creed-border)] bg-[var(--creed-surface-raised)] p-3">
+              <p className="text-[13px] leading-5 text-[var(--creed-text-secondary)]">
+                Email is not configured. Copy this invite link to deliver it manually.
+              </p>
+              <div className="mt-3 flex gap-2">
+                <Input
+                  readOnly
+                  value={manualInviteLink}
+                  aria-label="Manual company invite link"
+                  className={`${FIELD_INPUT} min-w-0 flex-1 text-[13px]`}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-md border-[var(--creed-border)] px-3"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(manualInviteLink).then(
+                      () => toast.success("Invite link copied."),
+                      () => toast.error("Could not copy the invite link."),
+                    );
+                  }}
+                >
+                  Copy link
+                </Button>
+              </div>
+            </div>
+          ) : null}
+        </>
       ) : null}
 
       <div className="flex flex-col divide-y divide-[var(--creed-border)]">
