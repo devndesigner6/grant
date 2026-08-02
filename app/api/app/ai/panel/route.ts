@@ -90,9 +90,6 @@ export async function POST(request: Request) {
       proposalLimit: 50,
       activityLimit: 1,
     });
-    if (companyId && state.company?.accessState === "frozen") {
-      return NextResponse.json({ error: "This company Creed is read-only until billing is fixed." }, { status: 403 });
-    }
     const sections: PanelSectionSummary[] = state.sections
       .filter((section) => !section.archived && permissionIsReadable(section.agentPermission))
       .map((section) => ({

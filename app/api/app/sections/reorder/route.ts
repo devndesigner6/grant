@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   });
   if (!result.ok) {
     const status =
-      result.code === "forbidden" || result.code === "frozen" ? 403 : 400;
+      result.code === "forbidden" ? 403 : 400;
     return NextResponse.json(
       { error: result.error, code: result.code },
       { status },

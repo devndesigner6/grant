@@ -3,7 +3,7 @@ import { analyzeCreedQuality, readQualityBaseline } from "@/lib/ai/quality";
 import type { CreedSection } from "@/lib/creed-data";
 import { requireApiAuth } from "@/lib/api-auth";
 import { resolveActiveCreed } from "@/lib/creed-context";
-import { getCompanyAccessState, getPersonalCreedId } from "@/lib/creed-membership";
+import { getPersonalCreedId } from "@/lib/creed-membership";
 import { canRunAnalysis } from "@/lib/creed-permissions";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -75,14 +75,6 @@ export async function POST(request: Request) {
     }
 
     if (companyId) {
-      const access = await getCompanyAccessState(admin, companyId);
-      if (access === "frozen") {
-        return NextResponse.json(
-          { error: "This company Creed is read-only until billing is fixed." },
-          { status: 403 }
-        );
-      }
-
       const role = companyEntry!.role;
       if (!canRunAnalysis(role)) {
         return NextResponse.json(

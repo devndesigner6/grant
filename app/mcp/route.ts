@@ -24,7 +24,7 @@ import {
 } from "@/lib/creed-backend";
 import { companyMcpWrite, type CompanyMcpOp } from "@/lib/company-sections";
 import { minPermission, resolveSectionPermission } from "@/lib/creed-permissions";
-import { hasCompanyAccess, listUserCreeds, getCreedRole } from "@/lib/creed-membership";
+import { listUserCreeds, getCreedRole } from "@/lib/creed-membership";
 import { CREED_PROMPTS } from "@/lib/creed-prompts";
 import { findOAuthAccessToken, oauthResource } from "@/lib/oauth";
 import {
@@ -60,39 +60,6 @@ const MCP_CORS_HEADERS = {
   // exposed; without this they can't discover where to start the OAuth flow.
   "Access-Control-Expose-Headers": "WWW-Authenticate, Mcp-Session-Id",
 } as const;
-
-const ENTITLEMENT_CACHE_TTL_MS = 60_000;
-const entitlementCache = new Map<string, { allowed: boolean; expiresAt: number }>();
-
-async function hasCurrentMcpAccess(
-  admin: SupabaseLikeClient,
-  userId: string,
-): Promise<boolean> {
-  const cached = entitlementCache.get(userId);
-  if (cached && cached.expiresAt > Date.now()) return cached.allowed;
-
-  const { data, error } = (await admin
-    .from("creed_entitlements")
-    .select("billing_mode, status")
-    .eq("user_id", userId)
-    .maybeSingle()) as {
-    data: { billing_mode?: string; status?: string } | null;
-    error: { message: string } | null;
-  };
-  const hasPersonalEntitlement =
-    !error &&
-    !!data &&
-    (data.billing_mode === "lifetime"
-      ? data.status === "paid"
-      : ["paid", "active", "trialing"].includes(data.status ?? ""));
-  const allowed =
-    hasPersonalEntitlement || (await hasCompanyAccess(admin, admin, userId));
-  entitlementCache.set(userId, {
-    allowed,
-    expiresAt: Date.now() + ENTITLEMENT_CACHE_TTL_MS,
-  });
-  return allowed;
-}
 
 // Injected into the model's context at connect time via the initialize
 // response. Carries the read-before-work / propose-narrowly contract so a
@@ -2377,12 +2344,6 @@ export async function POST(request: Request) {
   const userId = resolved.userId;
 
   const admin = getSupabaseAdminClient();
-  if (!(await hasCurrentMcpAccess(admin as unknown as SupabaseLikeClient, userId))) {
-    return NextResponse.json(
-      { error: "An active Creed entitlement is required." },
-      { status: 403, headers: MCP_CORS_HEADERS },
-    );
-  }
   const { data: userData, error: userError } = await admin.auth.admin.getUserById(userId);
   if (userError || !userData.user) {
     return NextResponse.json(

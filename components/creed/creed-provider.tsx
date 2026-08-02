@@ -893,7 +893,7 @@ export function CreedProvider({
 
   // Persist a company section's metadata (name / accent) through the same
   // per-section PUT the content autosave uses. These were previously only
-  // committed locally in company mode - the old frozen merge hid it, so a
+  // committed locally in company mode - the old merge hid it, so a
   // rename looked applied all session and silently vanished on reload.
   async function saveCompanySectionMeta(
     sectionId: string,

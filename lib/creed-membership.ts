@@ -2,7 +2,6 @@ import "server-only";
 import type { SupabaseLikeClient } from "@/lib/supabase/types";
 import type { CreedRole, CreedType } from "@/lib/creed-permissions";
 import { deriveCompanyAccessState, type CompanyAccessState } from "@/lib/creed-permissions";
-import { hasActiveEntitlement } from "@/lib/stripe";
 
 // Membership + Creed-listing helpers.
 //
@@ -103,16 +102,6 @@ export async function listUserCreeds(
       return a.name.localeCompare(b.name);
     });
 
-  // A personal Creed is only real when the user actually holds a personal plan.
-  // The company migration backfilled a personal creeds row for every existing
-  // user, so without this an invited company member would see (and be routed
-  // into) a phantom personal Creed they never paid for - the personal Creed is
-  // reserved for the personal plan. Company Creeds are always included. Only
-  // pay the entitlement read when a personal row is actually present.
-  const hasPersonal = mapped.some((c) => c.type === "personal");
-  if (hasPersonal && !(await hasActiveEntitlement(client, userId))) {
-    return mapped.filter((c) => c.type !== "personal");
-  }
   return mapped;
 }
 
@@ -169,34 +158,16 @@ export async function getCompanyAccessState(
 }
 
 /**
- * Does the user hold membership on at least one company Creed whose billing
- * currently grants access (active/past_due, or lifetime paid)? Used by the app
- * gate so an invited member with no personal entitlement can still enter. Reads
- * membership under RLS via the passed client, then billing via the admin client
- * (billing rows are owner-only under RLS, so a non-owner member cannot read them
- * with their session client).
+ * Does the user hold membership on at least one company Creed? The second
+ * parameter remains for call-site compatibility while company billing is no
+ * longer an access control.
  */
 export async function hasCompanyAccess(
   client: unknown,
-  adminClient: unknown,
+  _adminClient: unknown,
   userId: string
 ): Promise<boolean> {
-  const db = client as SupabaseLikeClient;
-  const { data: memberRows, error } = (await db
-    .from("creed_members")
-    .select("creed_id")
-    .eq("user_id", userId)) as { data: Array<{ creed_id: string }> | null; error: unknown };
-  if (error || !memberRows || memberRows.length === 0) return false;
-
-  const admin = adminClient as SupabaseLikeClient;
-  const ids = memberRows.map((row) => row.creed_id);
-  const { data: billingRows, error: billingError } = (await admin
-    .from("creed_company_billing")
-    .select("status")
-    .in("creed_id", ids)) as { data: Array<{ status: string }> | null; error: unknown };
-  if (billingError || !billingRows) return false;
-
-  return billingRows.some((row) => deriveCompanyAccessState(row.status) !== "frozen");
+  return (await listUserCreeds(client, userId)).some((creed) => creed.type === "company");
 }
 
 export type { MemberRow, CreedRow };

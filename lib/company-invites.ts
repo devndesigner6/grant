@@ -5,7 +5,6 @@ import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { SupabaseLikeClient } from "@/lib/supabase/types";
 import { hashSecret } from "@/lib/secret-crypto";
 import { getCompanyBilling } from "@/lib/company-billing";
-import { deriveCompanyAccessState } from "@/lib/creed-permissions";
 import { getCreedRole } from "@/lib/creed-membership";
 import { getUserName, getAvatarUrl, getAvatarInitials } from "@/lib/creed-backend";
 
@@ -27,7 +26,7 @@ export type InviteResult =
   | {
       ok: false;
       error: string;
-      code: "forbidden" | "frozen" | "no_seats" | "duplicate" | "already_member" | "failed";
+      code: "forbidden" | "duplicate" | "already_member" | "failed";
     };
 
 export type AcceptResult =
@@ -91,16 +90,9 @@ export async function getSeatUsage(creedId: string): Promise<SeatUsage> {
   return { used, capacity, available: Math.max(0, capacity - used) };
 }
 
-async function isCompanyFrozen(creedId: string): Promise<boolean> {
-  const billing = await getCompanyBilling(creedId);
-  if (!billing) return false;
-  return deriveCompanyAccessState(billing.status) === "frozen";
-}
-
 /**
  * Create a pending invite. The caller must be owner/admin (checked here against
- * live membership). Enforces the freeze state, seat capacity, and one pending
- * invite per email. Returns the raw token so the route can build + send the
+ * live membership) and one pending invite per email. Returns the raw token so the route can build + send the
  * email link. Does not send email itself (kept side-effect free for testing).
  */
 export async function createInvite(params: {
@@ -116,10 +108,6 @@ export async function createInvite(params: {
   if (actorRole !== "owner" && actorRole !== "admin") {
     return { ok: false, error: "Only an owner or admin can invite.", code: "forbidden" };
   }
-  if (await isCompanyFrozen(creedId)) {
-    return { ok: false, error: "Billing is paused for this company.", code: "frozen" };
-  }
-
   const normalizedEmail = email.trim().toLowerCase();
 
   // Inviting someone already on the team would consume a seat forever (accept
@@ -134,11 +122,6 @@ export async function createInvite(params: {
   }
   if (alreadyMember) {
     return { ok: false, error: "That person is already a member.", code: "already_member" };
-  }
-
-  const seats = await getSeatUsage(creedId);
-  if (seats.available <= 0) {
-    return { ok: false, error: "This company is out of seats.", code: "no_seats" };
   }
 
   const token = randomBytes(32).toString("base64url");
@@ -274,8 +257,7 @@ export async function resolveInviteByToken(
 }
 
 /**
- * Accept an invite for the signed-in user. Re-validates status, expiry, seat
- * capacity (it may have shrunk), and that the invite's email matches the user's
+ * Accept an invite for the signed-in user. Re-validates status, expiry, and that the invite's email matches the user's
  * (case-insensitive). Creates the membership and marks the invite accepted.
  * Idempotent: an already-member returns ok.
  */
@@ -320,10 +302,6 @@ export async function acceptInvite(token: string, user: User): Promise<AcceptRes
   if (memberError || accepted === "invalid") {
     return { ok: false, error: "Could not join the company.", code: "failed" };
   }
-  if (accepted === "no_seats") {
-    return { ok: false, error: "This company is out of seats.", code: "no_seats" };
-  }
-
   return { ok: true, creedId: invite.creed_id };
 }
 

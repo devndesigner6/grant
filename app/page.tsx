@@ -3,9 +3,7 @@ import { redirect } from "next/navigation";
 import { BackendSetupScreen } from "@/components/auth/backend-setup-screen";
 import { hasPersistedCreed } from "@/lib/creed-backend";
 import { isSupabaseTableMissingError } from "@/lib/creed-backend-errors";
-import { hasActiveEntitlement } from "@/lib/stripe";
 import { hasCompanyAccess } from "@/lib/creed-membership";
-import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { log } from "@/lib/observability";
@@ -13,7 +11,7 @@ import { log } from "@/lib/observability";
 export const dynamic = "force-dynamic";
 
 // Root-page router. Branches on three signals: Supabase configured?
-// (otherwise marketing-only), signed in?, paid?. Only then do we ask
+// (otherwise marketing-only), signed in?, has a workspace? Only then do we ask
 // whether a personal Creed row exists to decide `/file` vs `/onboarding`
 // (the row, not the section count - an emptied Creed is still onboarded).
 //
@@ -28,7 +26,7 @@ export default async function Home() {
 
   // Fast path for signed-out visitors (and every crawler that hits `/`):
   // no Supabase auth cookie means no session, so skip the client setup and
-  // the auth/entitlement round-trips entirely. Anyone holding a cookie -
+  // the auth/workspace round-trips entirely. Anyone holding a cookie -
   // even an expired one - falls through to the real getUser() check below.
   const cookieStore = await cookies();
   const hasAuthCookie = cookieStore
@@ -59,25 +57,11 @@ export default async function Home() {
     redirect("/home");
   }
 
-  // Access gate. The app is the paid product, so a signed-in user with no
-  // access is sent to /onboarding (free: connect an agent, compose, preview,
-  // then "Get Creed"). Access is either a personal entitlement OR membership of
-  // a company Creed whose billing is live - a company member never needs a
-  // personal plan.
-  const admin = getSupabaseAdminClient();
-  const [paid, companyAccess] = await Promise.all([
-    hasActiveEntitlement(supabase, user.id),
-    hasCompanyAccess(supabase, admin, user.id),
-  ]);
-  if (!paid && !companyAccess) {
-    redirect("/onboarding");
-  }
+  const companyAccess = await hasCompanyAccess(supabase, supabase, user.id);
 
-  // A company member goes straight into the app; the (creed-app) layout resolves
-  // their active (company) Creed, and - for an owner who hasn't finished company
-  // setup - resumes company onboarding. They must never be routed through the
-  // personal first-run flow. Only a personal-only paid user gets the section
-  // probe below (personal onboarding when they have no sections yet).
+  // A company member goes straight into the app, where the active workspace is
+  // resolved and an owner with unfinished company setup resumes onboarding.
+  // Only a personal-only user gets the section probe below.
   if (companyAccess) {
     redirect("/file");
   }

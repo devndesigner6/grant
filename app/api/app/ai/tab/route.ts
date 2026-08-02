@@ -19,8 +19,6 @@ import {
 } from "@/lib/ai/tab";
 import { loadActiveCreedSections } from "@/lib/creed-backend";
 import { resolveActiveCreed } from "@/lib/creed-context";
-import { getCompanyAccessState } from "@/lib/creed-membership";
-import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sectionBodyMarkdown } from "@/lib/creed-data";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { log } from "@/lib/observability";
@@ -59,16 +57,6 @@ export async function POST(request: Request) {
     (c) => c.id === activeCreed.creedId && c.type === "company",
   );
   const companyId = companyEntry ? activeCreed!.creedId : undefined;
-
-  if (companyId) {
-    const admin = getSupabaseAdminClient();
-    if ((await getCompanyAccessState(admin, companyId)) === "frozen") {
-      return NextResponse.json(
-        { error: "This company Creed is read-only until billing is fixed." },
-        { status: 403 },
-      );
-    }
-  }
 
   let payload: {
     messages: Array<{ role: "system" | "user"; content: string }>;

@@ -1997,32 +1997,6 @@ export function CompanySettings() {
           Settings
         </h1>
 
-        {company.accessState === "frozen" ? (
-          <div className="mt-6 rounded-[var(--radius-xl)] border border-[var(--creed-border)] bg-[var(--creed-surface-raised)] p-4 text-[13px] leading-6 text-[var(--creed-text-secondary)]">
-            This company Creed is read-only until billing is fixed.{" "}
-            {isOwner ? (
-              <button
-                onClick={openPortal}
-                className="font-medium text-[var(--creed-text-primary)] underline underline-offset-2"
-              >
-                Fix billing
-              </button>
-            ) : (
-              "Ask your owner to fix billing."
-            )}
-          </div>
-        ) : company.accessState === "past_due" && isOwner ? (
-          <div className="mt-6 rounded-[var(--radius-xl)] border border-[var(--creed-border)] bg-[var(--creed-surface-raised)] p-4 text-[13px] leading-6 text-[var(--creed-text-secondary)]">
-            A payment did not go through.{" "}
-            <button
-              onClick={openPortal}
-              className="font-medium text-[var(--creed-text-primary)] underline underline-offset-2"
-            >
-              Fix billing
-            </button>
-          </div>
-        ) : null}
-
         {blocks.map((block, index) => (
           <div key={index} className={index === 0 ? "mt-10" : undefined}>
             {index > 0 ? (
