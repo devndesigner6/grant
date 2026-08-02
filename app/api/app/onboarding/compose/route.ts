@@ -73,7 +73,7 @@ export async function POST(request: Request) {
 
   if (result.state.sections.length === 0) {
     return NextResponse.json(
-      { error: "Finish the onboarding questions first." },
+      { error: "Finish the onboarding questions first.", code: "seed_missing" },
       { status: 409 }
     );
   }

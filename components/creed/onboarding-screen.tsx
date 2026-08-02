@@ -148,17 +148,32 @@ export function OnboardingScreen({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ markdown }),
         });
-        // Already composed (a re-paste): just move on to the preview.
-        if (res.status === 409) {
-          setStep(PREVIEW_STEP);
-          return;
-        }
         const data = (await res.json().catch(() => ({}))) as {
           ok?: boolean;
           matched?: number;
           sections?: CreedSection[];
           error?: string;
         };
+        // A re-paste can legitimately race a completed compose request. Reload
+        // the saved profile before showing its preview. Other 409 responses,
+        // including a missing onboarding seed, are real errors and must remain
+        // on this step instead of leading to an empty preview.
+        if (res.status === 409 && data.error === "already_composed") {
+          const stateResponse = await fetch("/api/app/state", {
+            cache: "no-store",
+          });
+          const statePayload = (await stateResponse.json().catch(() => ({}))) as {
+            state?: { sections?: unknown };
+          };
+          const savedSections = statePayload.state?.sections;
+          if (stateResponse.ok && Array.isArray(savedSections) && savedSections.length > 0) {
+            setComposedResult(savedSections as CreedSection[]);
+            setStep(PREVIEW_STEP);
+            return;
+          }
+          setPasteError("Your saved Grant profile could not be loaded. Refresh the page and try again.");
+          return;
+        }
         if (!res.ok) {
           setPasteError(
             typeof data.error === "string" ? data.error : "Could not save that. Try again."
